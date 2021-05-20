@@ -1,0 +1,15 @@
+﻿
+#spinner {
+    z-index: 10000;
+    position: fixed;
+    width: 110%;
+    height: 100%;
+    margin-top: 0px;
+    margin-left: -100px;
+    background: rgba(0, 0, 0, 0.5);
+}
+.custom-header {
+    padding: 1px;    
+}
+
+

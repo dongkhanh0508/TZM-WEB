@@ -1,0 +1,134 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\assets\component\aterrien\jQuery-Knob\js\jquery.knob.js" />
+    <None Include="wwwroot\assets\component\autosize\dist\autosize.min.js" />
+    <None Include="wwwroot\assets\component\bootstrap-datepicker\dist\js\bootstrap-datepicker.min.js" />
+    <None Include="wwwroot\assets\component\bootstrap-daterangepicker\daterangepicker.js" />
+    <None Include="wwwroot\assets\component\bootstrap-maxlength\src\bootstrap-maxlength.js" />
+    <None Include="wwwroot\assets\component\bootstrap-multiselect\dist\js\bootstrap-multiselect.js" />
+    <None Include="wwwroot\assets\component\bootstrap-tagsinput\dist\bootstrap-tagsinput.js" />
+    <None Include="wwwroot\assets\component\bootstrap\dist\js\bootstrap.min.js" />
+    <None Include="wwwroot\assets\component\c3\c3.js" />
+    <None Include="wwwroot\assets\component\chart.js\dist\Chart.js" />
+    <None Include="wwwroot\assets\component\chartist\dist\chartist.js" />
+    <None Include="wwwroot\assets\component\ckeditor\ckeditor.js" />
+    <None Include="wwwroot\assets\component\classie\classie.js" />
+    <None Include="wwwroot\assets\component\clndr\src\clndr.js" />
+    <None Include="wwwroot\assets\component\countdown\dest\jquery.countdown.js" />
+    <None Include="wwwroot\assets\component\cropper\dist\cropper.min.js" />
+    <None Include="wwwroot\assets\component\d3\d3.js" />
+    <None Include="wwwroot\assets\component\d3\d3.min.js" />
+    <None Include="wwwroot\assets\component\datatables.net-bs4\js\dataTables.bootstrap4.min.js" />
+    <None Include="wwwroot\assets\component\datatables.net-buttons\js\buttons.html5.min.js" />
+    <None Include="wwwroot\assets\component\datatables.net-buttons\js\buttons.print.min.js" />
+    <None Include="wwwroot\assets\component\datatables.net-buttons\js\dataTables.buttons.min.js" />
+    <None Include="wwwroot\assets\component\datatables.net-responsive-bs4\js\responsive.bootstrap4.min.js" />
+    <None Include="wwwroot\assets\component\datatables.net-responsive\js\dataTables.responsive.min.js" />
+    <None Include="wwwroot\assets\component\datatables.net\js\jquery.dataTables.min.js" />
+    <None Include="wwwroot\assets\component\datedropper\datedropper.min.js" />
+    <None Include="wwwroot\assets\component\datedropper\dd-icon\dd-icon.svg" />
+    <None Include="wwwroot\assets\component\ekko-lightbox\dist\ekko-lightbox.js" />
+    <None Include="wwwroot\assets\component\Flot\jquery.flot.categories.js" />
+    <None Include="wwwroot\assets\component\Flot\jquery.flot.js" />
+    <None Include="wwwroot\assets\component\Flot\jquery.flot.pie.js" />
+    <None Include="wwwroot\assets\component\fullcalendar\dist\fullcalendar.min.js" />
+    <None Include="wwwroot\assets\component\handlebars\handlebars.min.js" />
+    <None Include="wwwroot\assets\component\handsontable\dist\handsontable.full.js" />
+    <None Include="wwwroot\assets\component\i18next-browser-languagedetector\i18nextBrowserLanguageDetector.min.js" />
+    <None Include="wwwroot\assets\component\i18next-xhr-backend\i18nextXHRBackend.min.js" />
+    <None Include="wwwroot\assets\component\i18next\i18next.min.js" />
+    <None Include="wwwroot\assets\component\intro.js\minified\intro.min.js" />
+    <None Include="wwwroot\assets\component\jquery-bar-rating\dist\jquery.barrating.min.js" />
+    <None Include="wwwroot\assets\component\jquery-bar-rating\jquery.barrating.js" />
+    <None Include="wwwroot\assets\component\jquery-i18next\jquery-i18next.min.js" />
+    <None Include="wwwroot\assets\component\jquery-minicolors\jquery.minicolors.min.js" />
+    <None Include="wwwroot\assets\component\jquery-slimscroll\jquery.slimscroll.js" />
+    <None Include="wwwroot\assets\component\jquery-sparkline\dist\jquery.sparkline.js" />
+    <None Include="wwwroot\assets\component\jquery-ui\jquery-ui.min.js" />
+    <None Include="wwwroot\assets\component\jquery-validation\dist\jquery.validate.js" />
+    <None Include="wwwroot\assets\component\jquery.cookie\jquery.cookie.js" />
+    <None Include="wwwroot\assets\component\jquery.filer\assets\fonts\jquery.filer-icons\jquery-filer.svg" />
+    <None Include="wwwroot\assets\component\jquery.filer\js\jquery.filer.min.js" />
+    <None Include="wwwroot\assets\component\jquery.steps\build\jquery.steps.js" />
+    <None Include="wwwroot\assets\component\jquery.uniform\dist\js\jquery.uniform.bundled.js" />
+    <None Include="wwwroot\assets\component\jquery\dist\jquery.min.js" />
+    <None Include="wwwroot\assets\component\jscolor\jscolor.js" />
+    <None Include="wwwroot\assets\component\jstree\dist\jstree.min.js" />
+    <None Include="wwwroot\assets\component\lightbox2\dist\js\lightbox.js" />
+    <None Include="wwwroot\assets\component\lightbox2\dist\js\lightbox.min.js" />
+    <None Include="wwwroot\assets\component\lightgallery\demo\js\lg-autoplay.min.js" />
+    <None Include="wwwroot\assets\component\lightgallery\demo\js\lg-fullscreen.min.js" />
+    <None Include="wwwroot\assets\component\lightgallery\demo\js\lg-hash.min.js" />
+    <None Include="wwwroot\assets\component\lightgallery\demo\js\lg-pager.min.js" />
+    <None Include="wwwroot\assets\component\lightgallery\demo\js\lg-thumbnail.min.js" />
+    <None Include="wwwroot\assets\component\lightgallery\demo\js\lg-video.min.js" />
+    <None Include="wwwroot\assets\component\lightgallery\demo\js\lg-zoom.min.js" />
+    <None Include="wwwroot\assets\component\lightgallery\dist\js\lightgallery.min.js" />
+    <None Include="wwwroot\assets\component\long-press\js\app.js" />
+    <None Include="wwwroot\assets\component\long-press\js\jquery.longpress.js" />
+    <None Include="wwwroot\assets\component\long-press\js\jquery.mousewheel.js" />
+    <None Include="wwwroot\assets\component\long-press\js\plugins.js" />
+    <None Include="wwwroot\assets\component\modernizr\feature-detects\css-scrollbars.js" />
+    <None Include="wwwroot\assets\component\modernizr\modernizr.js" />
+    <None Include="wwwroot\assets\component\moment\min\moment.min.js" />
+    <None Include="wwwroot\assets\component\moment\moment.js" />
+    <None Include="wwwroot\assets\component\morris.js\morris.js" />
+    <None Include="wwwroot\assets\component\multiselect\js\jquery.multi-select.js" />
+    <None Include="wwwroot\assets\component\nvd3\build\nv.d3.js" />
+    <None Include="wwwroot\assets\component\offline\offline.min.js" />
+    <None Include="wwwroot\assets\component\owl.carousel\dist\owl.carousel.min.js" />
+    <None Include="wwwroot\assets\component\peity\jquery.peity.js" />
+    <None Include="wwwroot\assets\component\pnotify\dist\pnotify.animate.js" />
+    <None Include="wwwroot\assets\component\pnotify\dist\pnotify.buttons.js" />
+    <None Include="wwwroot\assets\component\pnotify\dist\pnotify.callbacks.js" />
+    <None Include="wwwroot\assets\component\pnotify\dist\pnotify.confirm.js" />
+    <None Include="wwwroot\assets\component\pnotify\dist\pnotify.desktop.js" />
+    <None Include="wwwroot\assets\component\pnotify\dist\pnotify.history.js" />
+    <None Include="wwwroot\assets\component\pnotify\dist\pnotify.js" />
+    <None Include="wwwroot\assets\component\pnotify\dist\pnotify.mobile.js" />
+    <None Include="wwwroot\assets\component\pnotify\dist\pnotify.nonblock.js" />
+    <None Include="wwwroot\assets\component\raphael\raphael.min.js" />
+    <None Include="wwwroot\assets\component\rickshaw\rickshaw.js" />
+    <None Include="wwwroot\assets\component\seiyria-bootstrap-slider\dist\bootstrap-slider.js" />
+    <None Include="wwwroot\assets\component\select2\dist\js\select2.full.min.js" />
+    <None Include="wwwroot\assets\component\slick-carousel\slick\fonts\slick.svg" />
+    <None Include="wwwroot\assets\component\slick-carousel\slick\slick.min.js" />
+    <None Include="wwwroot\assets\component\spectrum\spectrum.js" />
+    <None Include="wwwroot\assets\component\stroll\js\stroll.js" />
+    <None Include="wwwroot\assets\component\summernote\dist\summernote.js" />
+    <None Include="wwwroot\assets\component\summernote\lang\summernote-ko-KR.js" />
+    <None Include="wwwroot\assets\component\sweetalert\dist\sweetalert.min.js" />
+    <None Include="wwwroot\assets\component\swiper\dist\js\swiper.min.js" />
+    <None Include="wwwroot\assets\component\switchery\dist\switchery.min.js" />
+    <None Include="wwwroot\assets\component\tether\dist\js\tether.min.js" />
+    <None Include="wwwroot\assets\component\typeahead.js\dist\typeahead.bundle.min.js" />
+    <None Include="wwwroot\assets\component\underscore\underscore-min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.1.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.10" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Logging" Version="6.8.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.8.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+    <PackageReference Include="NetTopologySuite.Core" Version="1.15.3" />
+    <PackageReference Include="NetTopologySuite.IO.GeoJSON" Version="2.0.4" />
+    <PackageReference Include="NetTopologySuite.IO.GeoJSON4STJ" Version="2.1.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\assets\default\assets\js\admin-map\NewFolder\" />
+    <Folder Include="wwwroot\assets\default\assets\pages\NewFolder\" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,25 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<section class="login offline-404 p-fixed d-flex text-center">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="auth-body">
+                    <form>
+                        <h1>Offline</h1>
+                        <h2>Oops! Website Is Temporarily Offline</h2>
+                        <a onclick="goBack()" class="btn btn-primary btn-lg m-t-30">Get back</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>

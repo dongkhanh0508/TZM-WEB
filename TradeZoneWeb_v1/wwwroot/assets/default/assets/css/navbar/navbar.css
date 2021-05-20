@@ -1,0 +1,8 @@
+﻿
+.admin-navbar-submenu{
+    display: none;
+}
+
+.admin-navbar-menu:hover + .admin-navbar-submenu {
+    display: inline;
+}

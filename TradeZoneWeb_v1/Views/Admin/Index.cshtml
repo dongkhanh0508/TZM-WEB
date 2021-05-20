@@ -1,0 +1,136 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@section CssForHead {
+    <link href="~/assets/default/assets/css/master-table/master-table.css" rel="stylesheet" />    
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/demo.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/j-pro-modern.css">
+    <link href="~/assets/sweet_alert_2/sweetalert2.css" rel="stylesheet" />
+}
+@section JsForHead {
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+}
+<div class="preloader3 loader-block pos-absolute" style="
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5); " id="spinner">
+    <div class="circ1"></div>
+    <div class="circ2"></div>
+    <div class="circ3"></div>
+    <div class="circ4"></div>
+</div>
+<div class="main-body">
+    <div class="page-wrapper">
+        <div class="page-header">
+            <div class="page-header-title">
+                <h4>DASHBOARD</h4>
+            </div>
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a href="@Url.Action("Index", "Admin")">
+                            <i class="icofont icofont-home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="#!">dashboard</a>
+                    </li>
+                </ul>
+            </div>
+            <br /><br />
+            <div class="row">
+                <div class="col-md-6 col-xl-3">
+                    <div class="card social-widget-card">
+                        <div class="card-block-big bg-primary">
+                            <h3>MAP</h3>
+                            <span class="m-t-10">map management</span>
+                            <a href="@Url.Action("index", "adminmap")" style="color: white;">
+                                <i class="ti-map-alt"></i>
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="card social-widget-card">
+                        <div class="card-block-big bg-linkein">
+                            <h3>Brands</h3>
+                            <span class="m-t-10">brand management</span>
+
+                            <a href="@Url.Action("Index", "AdminManageBrand")" style="color: white;">
+                                <i class="ti-crown m-r-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="card social-widget-card">
+                        <div class="card-block-big bg-inverse">
+                            <h3>Account</h3>
+                            <span class="m-t-10">account management</span>
+
+                            <a href="@Url.Action("Index", "AdminManageAccount")" style="color: white;">
+                                <i class="ti-user m-r-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="card social-widget-card">
+                        <div class="card-block-big bg-warning">
+                            <h3>Setting</h3>
+                            <span class="m-t-10">configuration</span>
+
+                            <a href="@Url.Action("Index", "AdminConfiguration")" style="color: white;">
+                                <i class="ti-settings m-r-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card table-1-card">
+                        <div class="card-header">
+                            <h5>Building & Store Need Approval</h5>
+                        </div>
+                        <div class="card-block">
+                            <div class="table-responsive">
+                                <table class="table" id="history">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">No</th>
+                                            <th class="text-center">Name</th>
+                                            <th class="text-center">Account</th>
+                                            <th class="text-center">Role</th>
+                                            <th class="text-center">CreateDate</th>
+                                            <th class="text-center">Action</th>
+                                            <th class="text-center">Current Status</th>
+                                            <th class="text-center">Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblData">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+@section ScriptsForBottom {
+
+    <script src="~/assets/default/assets/js/admin-index/admin-index.js"></script>
+    <script src="~/assets/sweet_alert_2/sweetalert2.js"></script>    
+    <script type="text/javascript" src="~/assets/default/assets/pages/j-pro/js/jquery.ui.min.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/j-pro/js/jquery.maskedinput.min.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/j-pro/js/jquery.j-pro.js"></script>
+}
+

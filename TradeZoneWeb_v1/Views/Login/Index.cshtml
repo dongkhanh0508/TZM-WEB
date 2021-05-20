@@ -1,0 +1,65 @@
+﻿@model TradeZoneWeb_v1.Models.GoogleResponseModel
+@{
+    ViewData["Title"] = "Login Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <link href="~/assets/default/assets/css/master-table/master-table.css" rel="stylesheet" />
+    <link href="~/assets/sweet_alert_2/sweetalert2.css" rel="stylesheet" />
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <body class="fix-menu">
+        <div class="preloader3 loader-block pos-absolute" style="
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5); " id="loginPreloader">
+            <div class="circ1"></div>
+            <div class="circ2"></div>
+            <div class="circ3"></div>
+            <div class="circ4"></div>
+        </div>
+        <section class="login p-fixed d-flex text-center bg-primary common-img-bg">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="login-card card-block auth-body">
+                            <form class="md-float-material">
+                                @*<div class="text-center">
+                                    <img src="~/assets/default/assets/images/LogoOfficial.png" alt="logo.png" style="width: 250px;">
+                                </div>*@
+                                <div class="text-center">
+                                    <img src="~/assets/default/assets/images/LogoBorderWhite.svg" alt="logo.png" style="width: 250px;">
+                                </div>
+                                
+                                <div class="auth-box" style="border-color: #dd4b39; border-style:solid">
+                                    <div class="row m-b-20">
+                                        <div class="col-md-12">
+                                            <h3 class="text-center txt-primary">TRADE ZONE MAP</h3>
+                                        </div>
+                                    </div>
+
+                                    <div class="row m-b-20">
+                                        <div class="col-md-12">
+                                            <div class="btn btn-google-plus m-b-20" id="btn-login">
+                                                <i class="icofont icofont-social-google-plus"></i>Sign in
+                                                with google
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The core Firebase JS SDK is always required and must be listed first -->
+        <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
+
+        <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-analytics.js"></script>
+        <script src="~/assets/default/assets/js/login/login.js"></script>
+        <script src="~/assets/sweet_alert_2/sweetalert2.js"></script>
+    </body>

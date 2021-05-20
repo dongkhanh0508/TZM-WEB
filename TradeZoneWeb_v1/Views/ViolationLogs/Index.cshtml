@@ -1,0 +1,250 @@
+﻿@using TradeZoneWeb_v1.Helpers
+@using TradeZoneWeb_v1.Models
+@{ ViewData["Title"] = "Assets ViolationLogs";
+    Layout = "~/Views/Shared/BrandLayout.cshtml"; }
+
+@section CssForHead {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Load Esri Leaflet Geocoder from CDN -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/esri-leaflet-geocoder@2.3.3/dist/esri-leaflet-geocoder.css"
+          integrity="sha512-IM3Hs+feyi40yZhDH6kV8vQMg4Fh20s9OzInIIAc4nx7aMYMfo+IenRUekoYsHZqGkREUgx0VvlEsgm7nCDW9g=="
+          crossorigin="" />
+    <link rel="stylesheet" href="~/assets/leaflet_geoman/leaflet-geoman.css" />
+    <link rel="stylesheet" href="~/assets/sweet_alert_2/sweetalert2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+    <style>
+        #map {
+            height: 250px;
+        }
+    </style>
+    <link href="~/assets/default/assets/css/master-table/master-table.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/assets/component/datatables.net-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/data-table/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/component/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/data-table/extensions/responsive/css/responsive.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/demo.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/j-pro-modern.css">
+    <link href="~/assets/sweet_alert_2/sweetalert2.css" rel="stylesheet" />
+}
+@section JsForHead {
+    <script src="~/assets/default/assets/js/brand-map-color.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@2.5.3/dist/esri-leaflet.js"
+            integrity="sha512-K0Vddb4QdnVOAuPJBHkgrua+/A9Moyv8AQEWi0xndQ+fqbRfAFd47z4A9u1AW/spLO0gEaiE1z98PK1gl5mC5Q=="
+            crossorigin=""></script>
+    <!-- Load Esri Leaflet Geocoder from CDN -->
+    <script src="https://unpkg.com/esri-leaflet-geocoder@2.3.3/dist/esri-leaflet-geocoder.js"
+            integrity="sha512-HrFUyCEtIpxZloTgEKKMq4RFYhxjJkCiF5sDxuAokklOeZ68U2NPfh4MFtyIVWlsKtVbK5GD2/JzFyAfvT5ejA=="
+            crossorigin=""></script>
+    <script src="~/assets/leaflet_geoman/leaflet-geoman.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+}
+<div class="preloader3 loader-block pos-absolute" style="
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5); " id="spinner">
+    <div class="circ1"></div>
+    <div class="circ2"></div>
+    <div class="circ3"></div>
+    <div class="circ4"></div>
+</div>
+<div class="main-body">
+    <div class="page-wrapper">
+        <div class="page-header">
+            <div class="page-header-title">
+                <h4>Assets ViolationLogs</h4>
+            </div>
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a href="@Url.Action("index", "dashboard")">
+                            <i class="icofont icofont-home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="#!">asset-violationlogs</a>
+                    </li>
+                </ul>
+            </div>
+            <br /><br />
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-12 col-xl-4">
+                            Store <select id="store-filter" style="height: 39px;" class="cb-filter custom-select custom-select-sm form-control form-control-sm">
+                                <option value="0">ALL</option>
+                                @foreach (var item in ViewBag.Stores)
+                                {
+                                    if (item.Status != 3)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="card-block">
+                    <div class="dt-responsive table-responsive">
+                        <table id="new-cons" class="table table-striped table-bordered nowrap">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th class="text-center">Asset Name</th>
+                                    <th class="text-center">Start Time</th>
+                                    <th class="text-center">End Time</th>
+                                    <th class="text-center">Store Name</th>
+                                    <th class="text-center">Type Violation</th>
+                                    <th class="text-center">Severity</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="details" style="z-index: 1060">
+    <div class="modal-dialog-custom modal-dialog" role="document" style="max-width: 55%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">VIOLATION DETAILS</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card user-card">
+                    <div class="btn-group" role="group" aria-label="user-cards">
+                        <form method="post"
+                              class="j-pro" id="form-update" action="javascript:;">
+                            <div class="card-block" style="
+                                padding-left: 0px;
+                                padding-right: 0px;
+                            ">
+                                <div class="col-sm-12">
+                                    <div id="map"></div>
+                                </div>
+                            </div>
+                            <div class="j-content">
+                                <div class="j-unit">
+                                    <label class="j-label">Asset Name</label>
+                                    <div class="j-input">
+                                        <label class="j-icon-right">
+                                            <i class="icofont icofont-pencil-alt-5" style="line-height: unset;"></i>
+                                        </label>
+                                        <input type="text" id="info-asset-name" value="" readonly>
+                                    </div>
+                                </div>
+                                <div class="j-unit">
+                                    <label class="j-label">Asset Key</label>
+                                    <div class="j-input">
+                                        <label class="j-icon-right">
+                                            <i class="icofont icofont-pencil-alt-5" style="line-height: unset;"></i>
+                                        </label>
+                                        <input type="text" id="info-asset-key" value="" readonly>
+                                    </div>
+                                </div>
+                                <div class="j-unit">
+                                    <label class="j-label">Store Name</label>
+                                    <div class="j-input">
+                                        <label class="j-icon-right">
+                                            <i class="icofont icofont-pencil-alt-5" style="line-height: unset;"></i>
+                                        </label>
+                                        <input type="text" id="info-store" value="" readonly>
+                                    </div>
+                                </div>
+                                <div class="j-row">
+                                    <div class="j-span6 j-unit">
+                                        <label class="j-label">Start Time</label>
+                                        <div class="j-input j-success-view">
+                                            <label class="j-icon-right" for="date_from">
+                                                <i class="icofont icofont-ui-calendar" style="line-height: unset;"></i>
+                                            </label>
+                                            <input id="info-start" type="text" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="j-span6 j-unit">
+                                        <label class="j-label">End Time</label>
+                                        <div class="j-input j-success-view">
+                                            <label class="j-icon-right" for="date_to">
+                                                <i class="icofont icofont-ui-calendar" style="line-height: unset;"></i>
+                                            </label>
+                                            <input id="info-end" type="text" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="j-row">
+                                    <div class="j-span6 j-unit">
+                                        <label class="j-label">Type Violation</label>
+                                        <div class="j-input">
+                                            <label class="j-icon-right" for="email">
+                                                <i class="ion-ios-compose" style="line-height: unset;"></i>
+                                            </label>
+                                            <input type="text" id="info-type-violation" name="email" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="j-span6 j-unit">
+                                        <label class="j-label">Severiry</label>
+                                        <div class="j-input">
+                                            <label class="j-icon-right" for="phone">
+                                                <i class="ion-ios-compose" style="line-height: unset;"></i>
+                                            </label>
+                                            <input type="text" id="info-severity" name="phone" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="j-unit">
+                                    <label class="j-label">Description</label>
+                                    <div class="j-input">
+                                        <textarea id="info-des" readonly></textarea>
+                                    </div>
+                                </div>
+                                <div class="j-response"></div>
+                                <div class="modal-footer">
+                                    <button id="close-update" type="button" class="btn btn-secondary mobtn" data-dismiss="modal">
+                                        <i class="zmdi zmdi-close-circle-o"></i> Close
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section ScriptsForBottom {
+    <script src="~/assets/default/assets/js/brand/violationlogs.js"></script>
+    <script src="~/assets/default/assets/js/brand/violation-map.js"></script>
+    <script src="~/assets/sweet_alert_2/sweetalert2.js"></script>
+    <script src="~/assets/component/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/component/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/assets/default/assets/pages/data-table/js/jszip.min.js"></script>
+    <script src="~/assets/default/assets/pages/data-table/js/pdfmake.min.js"></script>
+    <script src="~/assets/default/assets/pages/data-table/js/vfs_fonts.js"></script>
+    <script src="~/assets/default/assets/pages/data-table/extensions/responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/assets/component/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/assets/component/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/assets/component/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/assets/component/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/assets/component/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/assets/default/assets/pages/data-table/extensions/responsive/js/responsive-custom.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/j-pro/js/jquery.ui.min.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/j-pro/js/jquery.maskedinput.min.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/j-pro/js/jquery.j-pro.js"></script>
+}

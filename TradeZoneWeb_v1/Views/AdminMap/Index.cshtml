@@ -1,0 +1,939 @@
+﻿@model CreateNewRequestModel
+@{
+    ViewData["Title"] = "Admin Map";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@section CssForHead {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Load Esri Leaflet Geocoder from CDN -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/esri-leaflet-geocoder@2.3.3/dist/esri-leaflet-geocoder.css"
+          integrity="sha512-IM3Hs+feyi40yZhDH6kV8vQMg4Fh20s9OzInIIAc4nx7aMYMfo+IenRUekoYsHZqGkREUgx0VvlEsgm7nCDW9g=="
+          crossorigin="" />
+    <link rel="stylesheet" href="~/assets/leaflet_geoman/leaflet-geoman.css" />
+    <link rel="stylesheet" href="~/assets/sweet_alert_2/sweetalert2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+    <style>
+        #map {
+            height: 100%;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="~/assets/component/switchery/dist/switchery.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/nestable/nestable.css" />
+    <link rel="stylesheet" type="text/css" href="~/assets/multi_select/example-styles.css" />
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/demo.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/j-pro-modern.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/css/map/zoom-level-control.css">
+}
+
+@section JsForHead {
+    <script src="~/assets/default/assets/js/brand-map-color.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@2.5.3/dist/esri-leaflet.js"
+            integrity="sha512-K0Vddb4QdnVOAuPJBHkgrua+/A9Moyv8AQEWi0xndQ+fqbRfAFd47z4A9u1AW/spLO0gEaiE1z98PK1gl5mC5Q=="
+            crossorigin=""></script>
+    <!-- Load Esri Leaflet Geocoder from CDN -->
+    <script src="https://unpkg.com/esri-leaflet-geocoder@2.3.3/dist/esri-leaflet-geocoder.js"
+            integrity="sha512-HrFUyCEtIpxZloTgEKKMq4RFYhxjJkCiF5sDxuAokklOeZ68U2NPfh4MFtyIVWlsKtVbK5GD2/JzFyAfvT5ejA=="
+            crossorigin=""></script>
+    <script src="~/assets/leaflet_geoman/leaflet-geoman.min.js"></script>
+    <script src="/assets/sweet_alert_2/sweetalert2.all.min.js"></script>
+    <script src="/assets/sweet_alert_2/sweetalert2.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <script src="/assets/terraformer/terraformer.js"></script>
+    <script src="/assets/terraformer/terraformer-arcgis-parser.js"></script>
+    <script src="/assets/terraformer/terraformer-wkt-parser.js"></script>
+    <script src="/assets/terraformer/terraformer-wkt-parser.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <script type="text/javascript" src="/assets/component/switchery/dist/switchery.min.js"></script>
+}
+
+@section ScriptsForBottom {
+    <script src="~/assets/default/assets/pages/nestable/jquery.nestable.js"></script>
+    <script type="text/javascript" src="~/assets/multi_select/jquery.multi-select.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/j-pro/js/jquery.ui.min.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/j-pro/js/jquery.maskedinput.min.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/j-pro/js/jquery.j-pro.js"></script>
+}
+<div class="preloader3 loader-block pos-absolute"
+     style="display: none;
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5); "
+     id="checkingSystemzonePreloader">
+    <div class="circ1"></div>
+    <div class="circ2"></div>
+    <div class="circ3"></div>
+    <div class="circ4"></div>
+</div>
+<div id="map" style="z-index: 0"></div>
+<button data-toggle="modal" data-target="#seeBuildingDetail" id="seeBuildingDetailButton" style="display:none">
+</button>
+<button data-toggle="modal" data-target="#seeStoreDetail" id="seeStoreDetailButton" style="display:none">
+</button>
+<!-- Create new System Zone -->
+<button class="btn btn-primary btn-icon"
+        style="
+                      position: absolute;
+                      bottom: 20px;
+                      left: 70px;
+                      border-top: none !important;
+                      visibility: hidden;
+                    "
+        data-toggle="modal"
+        data-target="#addLocationModal">
+    <i class="icofont icofont-ui-add" style="margin-right: 0px !important" id="newZone"></i>
+</button>
+<div class="modal fade" id="addLocationModal" style="z-index: 1060;">
+    <div class="modal-dialog" role="document">
+        <div class="preloader3 loader-block pos-absolute"
+             style="display: none;
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5); "
+             id="checkingCreateSystemZonePreloader">
+            <div class="circ1"></div>
+            <div class="circ2"></div>
+            <div class="circ3"></div>
+            <div class="circ4"></div>
+        </div>
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        Create new
+                    </h5>
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                            id="closeCreateNewZoneButton">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Name</label>
+                        <div class="col-sm-10">
+                            <input type="hidden" id="wardId" />
+                            <input type="hidden" id="wkt" />
+                            <label id="nameCreateNew-error"
+                                   class="error"
+                                   for="nameCreateNew"
+                                   style="display: none;color: #8a1f11;">
+                                Only characters A-Z, a-z, 0-9 and '-' are  acceptable.
+                            </label>
+                            <input type="text" class="form-control" id="nameCreateNew" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Ward</label>
+                        <div class="col-sm-10">
+                            <input type="text"
+                                   class="form-control" readonly id="wardName" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">District</label>
+                        <div class="col-sm-10">
+                            <input type="text"
+                                   class="form-control" readonly id="districtName" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Type</label>
+                        <div class="col-sm-10">
+                            <input type="text" asp-for="Type"
+                                   class="form-control"
+                                   id="typeCreateNew" readonly />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal"
+                            id="cancelCreateNewZoneButton">
+                        Cancel
+                    </button>
+                    <button type="button"
+                            class="btn btn-primary col-sm-3"
+                            id="createNewZoneButton">
+                        Create
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Create new Campus -->
+<button class="btn btn-primary btn-icon"
+        style="
+                      position: absolute;
+                      bottom: 20px;
+                      left: 70px;
+                      border-top: none !important;
+                      visibility: hidden;
+                    "
+        data-toggle="modal"
+        data-target="#addCampusModal">
+    <i class="icofont icofont-ui-add" style="margin-right: 0px !important" id="newCampus"></i>
+</button>
+<div class="modal fade" id="addCampusModal" style="z-index: 1060;">
+    <div class="modal-dialog" role="document">
+        <div class="preloader3 loader-block pos-absolute"
+             style="display: none;
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5); "
+             id="checkingCreateCampusPreloader">
+            <div class="circ1"></div>
+            <div class="circ2"></div>
+            <div class="circ3"></div>
+            <div class="circ4"></div>
+        </div>
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        Create new
+                    </h5>
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                            id="closeCreateNewCampusButton">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Name</label>
+                        <div class="col-sm-10">
+                            <input type="hidden" id="wktCampus" />
+                            <label id="nameCreateNewCampus-error"
+                                   class="error"
+                                   for="nameCreateNewCampus"
+                                   style="display: none;color: #8a1f11;">
+                                Only characters A-Z, a-z, 0-9 and '-' are  acceptable.
+                            </label>
+                            <input type="text" class="form-control" id="nameCreateNewCampus" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Streets</label>
+                        <div class="col-sm-10" id="streetSelector">
+
+
+                        </div>
+
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Type</label>
+                        <div class="col-sm-10">
+                            <input type="text"
+                                   class="form-control"
+                                   id="typeCreateNewCampus" readonly />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal"
+                            id="cancelCreateNewCampusButton">
+                        Cancel
+                    </button>
+                    <button type="button"
+                            class="btn btn-primary col-sm-3"
+                            id="createNewCampusButton">
+                        Create
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal detail system zone -->
+<div class="modal fade" id="seeSystemZoneDetail" style="z-index: 1060;">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="preloader3 loader-block pos-absolute"
+             style="display: none;
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5); "
+             id="systemZonePreloader">
+            <div class="circ1"></div>
+            <div class="circ2"></div>
+            <div class="circ3"></div>
+            <div class="circ4"></div>
+        </div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    System zone detail
+                </h5>
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                        id="closeCreateNewButton">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Id</label>
+                    <div class="col-sm-10">
+                        <input type="text"
+                               class="form-control"
+                               id="systemZoneId"
+                               readonly />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-8">
+                        <label id="systemZoneName-error" class="error" style="display: none; color: rgb(138, 31, 17);">
+                            This field is required and only characters A-Z, a-z, 0-9 and '-' are  acceptable.
+                        </label>
+                        <input type="text"
+                               class="form-control"
+                               id="systemZoneName"
+                               readonly />
+                    </div>
+                    <div class="col-sm-2 row m-0" id="systemZoneConfirmBox" style="display: none">
+                        <div class="col-sm-6">
+                            <div class="row p-r-5">
+                                <button class="btn btn-success col-sm-12" onclick="ConfirmEditSystemZone()">
+                                    <i class="ti-check" style="margin-left: -5px"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="row p-l-5">
+                                <button class="btn btn-danger col-sm-12" onclick="CancelEditSystemZone()">
+                                    <i class="ti-close" style="margin-left: -5px"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 row m-0" id="editSystemZoneButton">
+                        <button class="btn btn-mini btn-primary col-sm-12" style="font-size: 15px; height: 100%" onclick="EditSystemZone()">Edit</button>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Surveyor</label>
+                </div>
+                <div class="form-group row" id="listSurveyor">
+                    <div class="table-responsive"
+                         style="margin-right: 15px; margin-left: 15px">
+                        <table class="table table-striped table-bordered"
+                               id="example-2">
+                            <thead>
+                                <tr>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Phone Number</th>
+                                    <th class="tabledit-toolbar-column"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="surveyorData"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group row" style="margin-left: 0px">
+                    <button type="button"
+                            class="btn btn-primary waves-effect waves-light add"
+                            id="initSurveyorButton"
+                            data-toggle="modal"
+                            data-target="#assignSurveyor">
+                        Assign
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                        id="cancelCreateNewButton">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Assign Modal -->
+<div class="modal fade" id="assignSurveyor">
+    <div class="modal-dialog modal-lg">
+        <div class="preloader3 loader-block pos-absolute"
+             style="display: none;
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5); "
+             id="surveyorPreloader">
+            <div class="circ1"></div>
+            <div class="circ2"></div>
+            <div class="circ3"></div>
+            <div class="circ4"></div>
+        </div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Assign surveyor</h4>
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-hidden="true">
+                    ×
+                </button>
+            </div>
+            <div class="container"></div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-10">
+                        <select name="select"
+                                class="form-control form-control-default"
+                                id="surveyorName"></select>
+                    </div>
+                    <input type="hidden"
+                           class="form-control"
+                           id="surveyorId"
+                           readonly />
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Phone number</label>
+                    <div class="col-sm-10">
+                        <input type="text"
+                               class="form-control"
+                               id="surveyorPhone"
+                               readonly />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Email</label>
+                    <div class="col-sm-10">
+                        <input type="text"
+                               class="form-control"
+                               id="surveyorEmail"
+                               readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#"
+                   data-dismiss="modal"
+                   class="btn"
+                   id="CloseAddSurveyor">Close</a>
+                <button type="button"
+                        class="btn btn-primary waves-effect waves-light add"
+                        id="AssignNewSurveyor">
+                    Assign
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal Campus-->
+<div class="modal fade" id="seeCampusDetail" style="z-index: 1060;">
+    <div class="modal-dialog" role="document">
+        <div class="preloader3 loader-block pos-absolute"
+             style="display: none;
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5); "
+             id="campusPreloader">
+            <div class="circ1"></div>
+            <div class="circ2"></div>
+            <div class="circ3"></div>
+            <div class="circ4"></div>
+        </div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Campus detail
+                </h5>
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                        id="closeCreateNewButton">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Id</label>
+                    <div class="col-sm-10">
+                        <input type="text"
+                               class="form-control"
+                               id="campusId"
+                               readonly />
+                        <input type="hidden" id="campusCoor" value="" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-10">
+                        <input type="text"
+                               class="form-control"
+                               id="campusName"
+                               readonly />
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Streets</label>
+                </div>
+                <div class="form-group row" id="listStreetSegment">
+                    <div class="table-responsive"
+                         style="margin-right: 15px; margin-left: 15px">
+                        <table class="table table-striped table-bordered"
+                               id="example-2">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody id="streetSegmentData"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group row" style="margin-left: 0px">
+                    <button type="button"
+                            class="btn btn-primary waves-effect waves-light add"
+                            id=""
+                            data-toggle="modal"
+                            onclick="InitUpdateCampus()"
+                            data-target="#editCampus">
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                        id="cancelCreateNewButton">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Update campus modal-->
+<div class="modal fade" id="editCampus">
+    <div class="modal-dialog">
+        <div class="preloader3 loader-block pos-absolute"
+             style="display: none;
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5); "
+             id="editCampusPreloader">
+            <div class="circ1"></div>
+            <div class="circ2"></div>
+            <div class="circ3"></div>
+            <div class="circ4"></div>
+        </div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Campus</h4>
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-hidden="true">
+                    ×
+                </button>
+            </div>
+            <div class="container"></div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-10">
+                        <input type="text"
+                               class="form-control"
+                               id="campusEditName" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Street</label>
+                    <div class="col-sm-10" id="listStreetEditCampus">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#"
+                   data-dismiss="modal"
+                   class="btn"
+                   id="closeUpdateCampus">Close</a>
+                <button type="button"
+                        class="btn btn-primary waves-effect waves-light add"
+                        onclick="UpdateCampus()"
+                        id="updateCampusButton">
+                    Update
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal detail building -->
+<div class="modal fade"
+     id="seeBuildingDetail"
+     style="z-index: 1060">
+    <div class="modal-dialog modal-lg" role="document" id="buildingModal">
+        <div class="preloader3 loader-block pos-absolute"
+             style="display: none;
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color:rgba(0, 0, 0, 0.5);"
+             id="buildingPreloader">
+            <div class="circ1"></div>
+            <div class="circ2"></div>
+            <div class="circ3"></div>
+            <div class="circ4"></div>
+        </div>
+        <div class="modal-content">
+            <div class="modal-header" style="display: block;">
+                <img id="buildingImg" src="http://maps.gstatic.com/tactile/pane/default_geocode-2x.png"
+                     width="100%"
+                     height="210px"
+                     style="object-fit: cover" />
+                <div class="row m-t-10">
+                    <div class="col-sm-8">
+                        <h3 class="modal-title" id="buildingName">
+                        </h3>
+                    </div>
+                    <div class="col-sm-4 text-right">
+                        <div class="form-group row m-0" id="buildingAction">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <h6 id="buildingType" class="col-sm-6"></h6>
+                    <p class="text-right col-sm-6"><i id="buildingStatusMess"></i></p>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id="infoBuildingRow" class="col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Id</label>
+                            <div class="col-sm-8">
+                                <input type="text"
+                                       class="form-control"
+                                       id="buildingId"
+                                       readonly />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Address</label>
+                            <div class="col-sm-8">
+                                <input type="text"
+                                       class="form-control"
+                                       id="buildingAdress"
+                                       readonly />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Create day</label>
+                            <div class="col-sm-8">
+                                <input type="text"
+                                       class="form-control"
+                                       id="buildingCreateDay"
+                                       readonly />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Floors number</label>
+                            <div class="col-sm-8">
+                                <input type="text"
+                                       class="form-control"
+                                       id="buildingNumberOfFloor"
+                                       readonly />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Campus id</label>
+                            <div class="col-sm-8">
+                                <input type="text"
+                                       class="form-control"
+                                       id="buildingCampusId"
+                                       readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div id="infoListFloorRow" class="col-sm-6" style="overflow: auto;">
+                        <div id="nestable-menu" class="m-b-10">
+                            <h5>
+                                List floors
+                                <button type="button"
+                                        class="btn btn-mini btn-success waves-effect waves-light col-sm-1"
+                                        data-action="expand-all">
+                                    <i class="icofont icofont-ui-add"></i>
+                                </button>
+                                <button id="collapseListFloorSButton"
+                                        type="button"
+                                        class="btn btn-mini btn-danger waves-effect waves-light col-sm-1"
+                                        data-action="collapse-all">
+                                    <i class="icofont icofont-ui-remove"></i>
+                                </button>
+                            </h5>
+                        </div>
+                        <div class="dd" id="color-nestable">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                        id="closeBuildingDetailButton">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@*Modal of building segment*@
+<div class="modal fade"
+     id="seeBuildingSegment"
+     style="z-index: 1060">
+    <div class="modal-dialog modal-lg" role="document" id="buildingModal">
+        <div class="preloader3 loader-block pos-absolute"
+             style="display: none;
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color:rgba(0, 0, 0, 0.5);"
+             id="buildingSegmentPreloader">
+            <div class="circ1"></div>
+            <div class="circ2"></div>
+            <div class="circ3"></div>
+            <div class="circ4"></div>
+        </div>
+        <div class="modal-content">
+            <div class="modal-header" style="display: block;">
+                <h5 class="modal-title">
+                    Building Segment
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group row">
+                            <div class="col-sm-12" id="listSegmentOfBuilding">
+                                No segment
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-8" id="segmentDetailsForm">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Id</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="segmentId" readonly="">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Name</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="segmentName" readonly="">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Potential Customer</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="segmentPotent" readonly="">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Primary age</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="segmentAge" readonly="">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Time slot</label>
+                            <div class="col-sm-8">
+                                <label class="badge badge-lg bg-default" id="slot1DetailLabel">0-6h</label>
+                                <label class="badge badge-lg bg-default" id="slot2DetailLabel">6-12h</label>
+                                <label class="badge badge-lg bg-default" id="slot3DetailLabel">12-18h</label>
+                                <label class="badge badge-lg bg-default" id="slot4DetailLabel">18-24h</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                        id="closeBuildingDetailButton">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal detail store -->
+<div class="modal fade" id="seeStoreDetail" style="z-index: 1060">
+    <div class="modal-dialog md-effect-2" id="storeModal">
+        <div class="preloader3 loader-block pos-absolute"
+             style="display: none;
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5);"
+             id="storeModalPreloader">
+            <div class="circ1"></div>
+            <div class="circ2"></div>
+            <div class="circ3"></div>
+            <div class="circ4"></div>
+        </div>
+        <div class="modal-content">
+            <div class="modal-header" style="display: block">
+                <img id="storeImage"
+                     src="http://maps.gstatic.com/tactile/pane/default_geocode-2x.png"
+                     width="100%"
+                     height="210px"
+                     style="object-fit: cover" />
+                <div class="row m-t-10">
+                    <div class="col-sm-6">
+                        <h3 class="modal-title" id="modalStoreName">Store Name</h3>
+                    </div>
+                    <div class="col-sm-6 text-right row p-r-0" id="modalStoreAction">
+                    </div>
+                </div>
+                <div class="row">
+                    <h6 id="modalStoreType" class="col-sm-6"></h6>
+                    <p class="text-right col-sm-6"><i id="modalStoreStatusMess"></i></p>
+                </div>
+            </div>
+            <div class="container"></div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Id</label>
+                    <div class="col-sm-8">
+                        <input type="text"
+                               class="form-control"
+                               id="modalStoreId"
+                               readonly />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Address</label>
+                    <div class="col-sm-8">
+                        <input type="text"
+                               class="form-control"
+                               id="modalStoreAddress"
+                               readonly />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Brand name</label>
+                    <div class="col-sm-8">
+                        <input type="text"
+                               class="form-control"
+                               id="modalStoreBrand"
+                               readonly />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Ability to serve</label>
+                    <div class="col-sm-8">
+                        <input type="text"
+                               class="form-control"
+                               id="modalStoreService"
+                               readonly />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Create Date</label>
+                    <div class="col-sm-8">
+                        <input type="text"
+                               class="form-control"
+                               id="modalStoreCreateDay"
+                               readonly />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Time slot</label>
+                    <div class="col-sm-8" style="display: grid;" id="timeSlotList">
+                        <div class="checkbox-fade fade-in-primary">
+                            <label>
+                                <input type="checkbox" value="" id="timeSlot1" onclick="return false;">
+                                <span class="cr">
+                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                </span> <span>0-6h</span>
+                            </label>
+                        </div>
+                        <div class="checkbox-fade fade-in-primary">
+                            <label>
+                                <input type="checkbox" value="" id="timeSlot2" onclick="return false;">
+                                <span class="cr">
+                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                </span> <span>6-12h</span>
+                            </label>
+                        </div>
+                        <div class="checkbox-fade fade-in-primary">
+                            <label>
+                                <input type="checkbox" value="" id="timeSlot3" onclick="return false;">
+                                <span class="cr">
+                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                </span> <span>12-18h</span>
+                            </label>
+                        </div>
+                        <div class="checkbox-fade fade-in-primary">
+                            <label>
+                                <input type="checkbox" value="" id="timeSlot4" onclick="return false;">
+                                <span class="cr">
+                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                </span> <span>18-24h</span>
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#"
+                       data-dismiss="modal"
+                       class="btn"
+                       id="closeStoreModal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript"
+            src="~/assets/default/assets/js/admin-map/admin-map.js"
+            locationFromOtherRequest="@ViewBag.Geom"
+            locationFromOtherRequestId="@ViewBag.Id"
+            locationFromOtherType="@ViewBag.Type"
+            buildingIdOfStore="@ViewBag.BuildingIdOfStore"></script>

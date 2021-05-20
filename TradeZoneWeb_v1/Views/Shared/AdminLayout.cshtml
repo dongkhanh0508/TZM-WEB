@@ -1,0 +1,344 @@
+﻿<html lang="en" style="height: 100%">
+<head>
+    <title>@ViewData["Title"]</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="Phoenixcoded" />
+    <meta name="keywords"
+          content=", Flat ui, Admin , Responsive, Landing, Bootstrap, App, Template, Mobile, iOS, Android, apple, creative app" />
+    <meta name="author" content="Phoenixcoded" />
+
+    <link rel="icon" href="~/assets/default/assets/images/LogoOfficialVer2.svg" type="image/x-icon" />
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800"
+          rel="stylesheet" />
+
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/assets/component/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/assets/default/assets/icon/themify-icons/themify-icons.css" />
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/assets/default/assets/icon/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/assets/default/assets/icon/material-design/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/assets/default/assets/icon/icofont/css/icofont.css" />
+
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/assets/default/assets/pages/flag-icon/flag-icon.min.css" />
+
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/assets/default/assets/pages/menu-search/css/component.css" />
+
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/assets/default/assets/pages/dashboard/horizontal-timeline/css/style.css" />
+
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/assets/default/assets/pages/dashboard/amchart/css/amchart.css" />
+
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/assets/default/assets/pages/flag-icon/flag-icon.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/css/style.css" />
+
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/assets/default/assets/css/color/color-1.css"
+          id="color" />
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/css/linearicons.css" />
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/assets/default/assets/css/simple-line-icons.css" />
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/css/ionicons.css" />
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/assets/default/assets/css/jquery.mCustomScrollbar.css" />
+    <link href="~/assets/default/assets/css/footer.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/css/navbar/navbar.css" />
+    <script type="text/javascript" src="~/assets/component/jquery/dist/jquery.min.js"></script>
+    @RenderSection("CssForHead", required: false)
+    @RenderSection("JsForHead", required: false)
+</head>
+<body style="height: 100%">
+    <div class="theme-loader">
+        <div class="ball-scale">
+            <div></div>
+        </div>
+    </div>
+    <div id="pcoded"
+         class="pcoded"
+         vertical-nav-type="collapsed"
+         style="height: 100%">
+        <div class="pcoded-overlay-box"></div>
+        <div class="pcoded-container navbar-wrapper" style="height: 100%">
+            <nav class="navbar header-navbar pcoded-header"
+                 header-theme="theme4"
+                 id="topNav"
+                 style="position: fixed; z-index: 1030; background-color: #004666">
+                <div class="navbar-wrapper">
+                    <div class="navbar-logo">
+                        <a class="mobile-menu" id="mobile-collapse" href="#!">
+                            <i class="ti-menu"></i>
+                        </a>
+                        <a href="@Url.Action("index", "admin")">
+                            <img class="img-fluid m-l-5"
+                                 src="~/assets/default/assets/images/FullLogoOfficial.svg"
+                                 alt="Theme-Logo" style="height: 40px" />
+                        </a>
+                        <a class="mobile-options">
+                            <i class="ti-more"></i>
+                        </a>
+                    </div>
+                    <div class="navbar-container container-fluid">
+                        <div>
+                            <ul class="nav-left">
+                                <li class="header-notification lng-dropdown">
+                                    <a>
+                                        <i class="ti-desktop m-r-5" style="color: #fff;"></i>
+                                        System
+                                        <i class="icofont icofont-rounded-down" style="color: #fff;"></i>
+                                    </a>
+                                    <ul class="show-notification" style="left: 0;">
+                                        <li>
+                                            <a href="@Url.Action("Index", "AdminManageAccount")"><i class="ti-user m-r-5"></i>  Account</a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Index", "AdminManageSegment")"><i class="ti-layout-list-thumb-alt m-r-5"></i>  Segment</a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Index", "AdminConfiguration")"><i class="ti-settings m-r-5"></i>  Configuration</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("index", "adminmap")" data-lng="en">
+                                        <i class="ti-map m-r-5" style="color: #fff;"></i> Map
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("index", "adminmanagebrand")" data-lng="en">
+                                        <i class="ti-crown m-r-5"></i> Brand
+                                    </a>
+                                </li>
+                                <li class="header-notification lng-dropdown">
+                                    <a>
+                                        <i class="ti-map-alt m-r-5" style="color: #fff;"></i>
+                                        Survey
+                                        <i class="icofont icofont-rounded-down" style="color: #fff;"></i>
+                                    </a>
+                                    <ul class="show-notification" style="left: 0;">
+                                        <li>
+                                            <a href="@Url.Action("building", "admin-history")"><i class="icofont icofont-building-alt"></i>  Building</a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("store", "admin-history")"><i class="zmdi zmdi-store m-r-5"></i>  Store</a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                            </ul>
+                            <ul class="nav-right">
+                                <li class="user-profile header-notification">
+                                    <a href="#!">
+                                        <img src="@User.Claims.ToArray()[5].Value"
+                                             alt="User-Profile-Image"
+                                             style="border-radius: 50px" />
+                                        <span>@User.Identity.Name</span>
+                                        <i class="ti-angle-down"></i>
+                                    </a>
+                                    <ul class="show-notification profile-notification"
+                                        style="z-index: 10">
+                                        <li>
+                                            <i id="profile-btn" class="ti-user" data-toggle="modal" data-target="#box-profile" onclick="profile('@User.Claims.ToArray()[0].Value')"></i> Profile
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("sign-out", "login")">
+                                                <i class="ti-layout-sidebar-left"></i> Logout
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <script>
+                //Show navbar submenu
+                function showNavbarSubMenu() {
+                    if (document.getElementById("admin-navbar-submenu").style.display == "block") {
+                        document.getElementById("admin-navbar-submenu").style.display = "none";
+                    } else {
+                        document.getElementById("admin-navbar-submenu").style.display = "block";
+                    }
+
+                }
+            </script>
+            <div class="pcoded-main-container"
+                 style="margin-top: 0px; padding-top: 56px; height: 100%">
+                <div class="pcoded-wrapper" style="height: 100%">
+                    <div class="main-body" style="height: 100%">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="site-footer bg-inverse" style="padding-top: 10px;
+        padding-bottom: 10px;
+        background-color: #004666 !important;
+" id="footerAdminMap">
+        @*<div class="container">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <h6>About</h6>
+                        <p class="text-justify">Scanfcode.com <i>CODE WANTS TO BE SIMPLE </i> Trade-zone team capstone project</p>
+                    </div>
+
+                </div>
+                <hr>
+            </div>*@
+        <div class="container">
+            <div class="row" style="height: 45px;">
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                    <p class="copyright-text">
+                        Copyright &copy; 2017 All Rights Reserved by
+                        <a href="#">Trade-zone teams</a>.
+                    </p>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <ul class="social-icons">
+                        <li><a class="facebook" href="#"><i class="fa fa-facebook m-t-10"></i></a></li>
+                        <li><a class="twitter" href="#"><i class="fa fa-twitter m-t-10"></i></a></li>
+                        <li><a class="dribbble" href="#"><i class="fa fa-dribbble m-t-10"></i></a></li>
+                        <li><a class="linkedin" href="#"><i class="fa fa-linkedin m-t-10"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div class="modal fade" id="box-profile" style="z-index: 1060">
+        <div class="modal-dialog-custom modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">PROFILE</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card user-card">
+                        <div class="card-header-img">
+                            <img class="img-fluid img-circle" src="" id="profile-img" onerror="this.src = '../assets/default/assets/images/error/avatar.png';"
+                                 alt="card-img" style="width: 50%;" />
+                            <h4 id="profile-email">Loading...</h4>
+
+                        </div>
+                        <div class="btn-group" role="group" aria-label="user-cards">
+                            <form method="post"
+                                  class="j-pro" id="form-profile" action="javascript:;">
+                                <div class="j-content">
+
+                                    <div class="j-unit">
+                                        <label class="j-label">Fullname</label>
+                                        <div class="j-input">
+                                            <label class="j-icon-right">
+                                                <i class="icofont icofont-ui-user"></i>
+                                            </label>
+                                            <input type="text" id="profile-name" value="" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="j-unit">
+                                        <label class="j-label">Phone/Mobile</label>
+                                        <div class="j-input">
+                                            <label class="j-icon-right">
+                                                <i class="icofont icofont-phone"></i>
+                                            </label>
+                                            <input type="text" id="profile-phone" value="" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="j-unit">
+                                        <label class="j-label">Role</label>
+                                        <div class="j-input">
+                                            <label class="j-icon-right">
+                                                <i class="ti-key"></i>
+                                            </label>
+                                            <input type="text" id="profile-role" value="" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="j-unit">
+                                        <label class="j-label">Brand Name</label>
+                                        <div class="j-input">
+                                            <label class="j-icon-right">
+                                                <i class="ti-id-badge"></i>
+                                            </label>
+                                            <input type="text" id="profile-brand" value="" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="j-divider j-gap-bottom-25"></div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary mobtn" data-dismiss="modal">
+                                        <i class="zmdi zmdi-close-circle-o"></i> Close
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/assets/default/assets/js/brand/profile.js"></script>
+    <script type="text/javascript" src="~/assets/component/jquery/dist/jquery.min.js"></script>
+    <script src="~/assets/component/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="~/assets/component/tether/dist/js/tether.min.js"></script>
+    <script type="text/javascript" src="~/assets/component/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/assets/component/jquery-slimscroll/jquery.slimscroll.js"></script>
+    <script type="text/javascript" src="~/assets/component/modernizr/modernizr.js"></script>
+    <script type="text/javascript" src="~/assets/component/modernizr/feature-detects/css-scrollbars.js"></script>
+    <script type="text/javascript" src="~/assets/component/classie/classie.js"></script>
+    <script src="~/assets/component/d3/d3.js"></script>
+    <script src="~/assets/component/rickshaw/rickshaw.js"></script>
+    <script src="~/assets/component/raphael/raphael.min.js"></script>
+    <script src="~/assets/component/morris.js/morris.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/dashboard/horizontal-timeline/js/main.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/dashboard/amchart/js/amcharts.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/dashboard/amchart/js/serial.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/dashboard/amchart/js/light.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/dashboard/amchart/js/custom-amchart.js"></script>
+    <script type="text/javascript"
+            src="~/assets/component/i18next/i18next.min.js"></script>
+    <script type="text/javascript"
+            src="~/assets/component/i18next-xhr-backend/i18nextXHRBackend.min.js"></script>
+    <script type="text/javascript"
+            src="~/assets/component/i18next-browser-languagedetector/i18nextBrowserLanguageDetector.min.js"></script>
+    <script type="text/javascript"
+            src="~/assets/component/jquery-i18next/jquery-i18next.min.js"></script>
+
+    <script type="text/javascript"
+            src="~/assets/default/assets/pages/dashboard/custom-dashboard.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/js/script.js"></script>
+
+    <script src="~/assets/default/assets/js/pcoded.min.js"></script>
+    <script src="~/assets/default/assets/js/demo-12.js"></script>
+    <script src="~/assets/default/assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="~/assets/default/assets/js/jquery.mousewheel.min.js"></script>
+    @RenderSection("ScriptsForBottom", required: false)
+</body>
+</html>

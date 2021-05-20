@@ -1,0 +1,1 @@
+document.getElementById("mappick").style.height = "100%";

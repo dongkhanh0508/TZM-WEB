@@ -1,0 +1,1130 @@
+﻿@{
+    ViewData["Title"] = "Map";
+    Layout = "~/Views/Shared/BrandLayout.cshtml";
+}
+@section CssForHead {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Load Esri Leaflet Geocoder from CDN -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/esri-leaflet-geocoder@2.3.3/dist/esri-leaflet-geocoder.css"
+          integrity="sha512-IM3Hs+feyi40yZhDH6kV8vQMg4Fh20s9OzInIIAc4nx7aMYMfo+IenRUekoYsHZqGkREUgx0VvlEsgm7nCDW9g=="
+          crossorigin="" />
+    <link rel="stylesheet" href="~/assets/leaflet_geoman/leaflet-geoman.css" />
+    <link rel="stylesheet" href="~/assets/sweet_alert_2/sweetalert2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+    <style>
+        #map {
+            height: 100%;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="~/assets/component/switchery/dist/switchery.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/nestable/nestable.css" />
+    <link rel="stylesheet" type="text/css" href="~/assets/multi_select/example-styles.css" />
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/demo.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/j-pro-modern.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/css/map/zoom-level-control.css">
+    <link href="~/assets/default/assets/css/brand/BrandMap.css" rel="stylesheet" />
+}
+
+@section JsForHead {
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@2.5.3/dist/esri-leaflet.js"
+            integrity="sha512-K0Vddb4QdnVOAuPJBHkgrua+/A9Moyv8AQEWi0xndQ+fqbRfAFd47z4A9u1AW/spLO0gEaiE1z98PK1gl5mC5Q=="
+            crossorigin=""></script>
+    <!-- Load Esri Leaflet Geocoder from CDN -->
+    <script src="https://unpkg.com/esri-leaflet-geocoder@2.3.3/dist/esri-leaflet-geocoder.js"
+            integrity="sha512-HrFUyCEtIpxZloTgEKKMq4RFYhxjJkCiF5sDxuAokklOeZ68U2NPfh4MFtyIVWlsKtVbK5GD2/JzFyAfvT5ejA=="
+            crossorigin=""></script>
+    <script src="~/assets/leaflet_geoman/leaflet-geoman.min.js"></script>
+    <script src="/assets/sweet_alert_2/sweetalert2.all.min.js"></script>
+    <script src="/assets/sweet_alert_2/sweetalert2.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <script src="/assets/terraformer/terraformer.js"></script>
+    <script src="/assets/terraformer/terraformer-arcgis-parser.js"></script>
+    <script src="/assets/terraformer/terraformer-wkt-parser.js"></script>
+    <script src="/assets/terraformer/terraformer-wkt-parser.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <script type="text/javascript" src="/assets/component/switchery/dist/switchery.min.js"></script>
+    <script src="~/assets/default/assets/js/brand-map-color.js"></script>
+}
+@section ScriptsForBottom {
+    @*<script type="module" src="~/assets/default/assets/js/brand-map/brand-map-module.js"></script>*@
+    <script type="text/javascript" src="~/assets/default/assets/js/mappick.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/js/brand-map/map.js"></script>
+    <script type="text/javascript" src="~/assets/multi_select/jquery.multi-select.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/j-pro/js/jquery.ui.min.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/j-pro/js/jquery.maskedinput.min.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/j-pro/js/jquery.j-pro.js"></script>
+}
+<div class="preloader3 loader-block pos-absolute"
+     style="display: none;
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5); "
+     id="loadingMainScreen">
+    <div class="circ1"></div>
+    <div class="circ2"></div>
+    <div class="circ3"></div>
+    <div class="circ4"></div>
+</div>
+@* See detail store button *@
+<button data-toggle="modal" data-target="#seeStoreDetail" id="seeStoreDetailButton" style="display:none">
+</button>
+@* See detail store button *@
+<button data-toggle="modal" data-target="#seeBuildingDetail" id="seeBuildingDetailButton" style="display:none">
+</button>
+<div id="map" style="z-index: 0"></div>
+<!-- Store list -->
+<div class="card"
+     id="listStores"
+     style="position: absolute;
+            padding-top:56px;
+            top: 0px;
+            left: 0%;
+            height: 100%;
+            width: 30%;
+            transition: 0.5s;
+            border-top: none !important;">
+    <div class="card-header">
+        <h5 class="m-t-10">Brand map dashboard</h5>
+        <button class="btn btn-default btn-mini"
+                style="height: 40.4px;
+                       width: 44px;
+                       top:66px;
+                       position: absolute;
+                       right: -44px;
+                       background-color: white;"
+                onclick="ShowStores()">
+            <div style="color: grey;
+                        font-size: 15px">
+                <i class="zmdi zmdi-store"></i>
+                <i class="zmdi zmdi-chevron-left" id="iconListStores"></i>
+            </div>
+
+        </button>
+    </div>
+    @*Tabs od store control*@
+    <div class="card-block">
+        <ul class="nav nav-tabs md-tabs" role="tablist">
+            <li class="nav-item" id="listStoreNavItem">
+                <a class="nav-link active" data-toggle="tab" href="#listStore" role="tab">Store</a>
+                <div class="slide"></div>
+            </li>
+            <li class="nav-item" id="listTradeZoneNavItem">
+                <a class="nav-link" data-toggle="tab" href="#tradeZone" role="tab">Trade zone</a>
+                <div class="slide"></div>
+            </li>
+            <li class="nav-item" id="listGroupZoneNavItem">
+                <a class="nav-link" data-toggle="tab" href="#groupZone" role="tab">Group zone</a>
+                <div class="slide"></div>
+            </li>
+            <li class="nav-item" id="listAssetNavItem">
+                <a class="nav-link" data-toggle="tab" href="#asset" role="tab">Asset</a>
+                <div class="slide"></div>
+            </li>
+        </ul>
+
+        <div class="tab-content card-block p-0 p-t-10">
+            @*Tab store control tab*@
+            <div class="tab-pane active" id="listStore" role="tabpanel">
+                @*Filter by group zone*@
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Group Zone</label>
+                    <div class="col-sm-9">
+                        <select name="select" class="form-control form-control-primary m-b-10"
+                                id="filterStoreControlTab" onchange="FilterStoreByGroupZone()">
+                            <option value="-1">All stores</option>
+                        </select>
+                    </div>
+                </div>
+                @*Checkbox show stores*@
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Show</label>
+                    <div class="col-sm-9">
+                        <div class="checkbox-fade fade-in-primary" id="checkboxStoreTab">
+                            <label>
+                                <input type="checkbox" value="" id="showAllStoreCheckBox" onchange="StoreCheckBoxChange()">
+                                <span class="cr">
+                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                </span> <span>Store</span>
+                            </label>
+                        </div>
+                        <div class="checkbox-fade fade-in-primary" >
+                            <label>
+                                <input type="checkbox" value="" id="showGroupZoneCheckBox" onchange="GroupZoneBoxChange()">
+                                <span class="cr">
+                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                </span> <span>Group</span>
+                            </label>
+                        </div>
+                        <div class="checkbox-fade fade-in-primary" >
+                            <label>
+                                <input type="checkbox" value="" id="showTradeZoneCheckBox" onchange="TradeZoneBoxChange()">
+                                <span class="cr">
+                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                </span> <span>Trade zone</span>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+                @*Title for "No trade zone version active"*@
+                <div style="text-align: center" id="noActiveTradeZoneNotification">
+                    <i class="ti-na" style="color: red; font-size: 50px;"></i>
+                    <h3>No trade zone version is active</h3>
+                    <h6><i>Active a trade zone version first</i></h6>
+                </div>
+                @*Table for store of group zone*@
+                <div class="table-responsive"
+                     id="tableOfStoreOfGroupZone"
+                     style="height: 65%;overflow: auto; display: none">
+                    <table class="table table-striped table-bordered"
+                           id="new-cons"
+                           style="font-size: 13px">
+                        <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Weight</th>
+                                <th class="tabledit-toolbar-column text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyOfStoreOfGroupZone">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @*Tab trade zone of store control tabs*@
+            <div class="tab-pane" id="tradeZone" role="tabpanel">
+                @*Filter by group zone*@
+                <div class="form-group row" id="tradeZoneVersionRow">
+                    <label class="col-sm-3 col-form-label">Version</label>
+                    <div class="col-sm-7">
+                        <select name="select" class="form-control form-control-primary" id="filterVersionTradeZone">
+                            <option value="-1">Loading...</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        @*Button init*@
+                        <button class="btn btn-primary"
+                                onclick=""
+                                title="Init new trade zone"
+                                id="btnInitNewTradeZone"
+                                style="float: right"
+                                data-toggle="modal"
+                                data-target="#inputDistanceModal">
+                            <i class="icofont icofont-plus" style="margin-right: 0px !important"></i>
+                        </button>
+                    </div>
+                </div>
+                @*Tab of group zone's store*@
+                <div class="trade-zone-tab-content" id="storeOfGroupZoneTab">
+                    <div style="float:left">
+                        <h6 id="titleOfStoreTradeZone">Store of Group zone</h6>
+                        <h6 id="coverageOfGroupZone">Coverage: 95%</h6>
+                    </div>
+
+                    <button class="btn btn-primary btn-mini m-l-5"
+                            style="float: right"
+                            id="btnCloseStoreOfGroupZone"
+                            onclick="CloseStoreOfGroupZone()">
+                        Back
+                    </button>
+                    @*Table of group zones*@
+                    <div class="table-responsive p-t-10" style="height: 65%;overflow: auto;">
+                        <table class="table table-striped table-bordered"
+                               id="new-cons"
+                               style="font-size: 13px">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th class="text-center">Store</th>
+                                    <th class="text-center">Weight</th>
+                                    <th class="tabledit-toolbar-column text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bodyOfStoreTradeZoneOfGroupZone">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @*Tab of group zone of trade zone*@
+                <div class="trade-zone-tab-content" id="groupZoneOfTradeZoneTab">
+                    <div style="float:left">
+                        <h6 id="titleOfGroupZone">Group zone of Trade zone</h6>
+                    </div>
+                    <button class="btn btn-primary btn-mini m-l-5"
+                            style="float: right"
+                            id="btnCloseGroupZoneOfTradeZone"
+                            onclick="CloseGroupZoneOfTradeZone()">
+                        Back
+                    </button>
+                    @*Table of group zones*@
+                    <div class="table-responsive p-t-10" style="height: 65%;overflow: auto;">
+                        <table class="table table-striped table-bordered"
+                               id="new-cons"
+                               style="font-size: 13px">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th class="text-center">Group zone</th>
+                                    <th class="text-center">Coverage</th>
+                                    <th class="tabledit-toolbar-column text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bodyGroupZoneOfTradeZoneVersionTable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @*Tab of detail trade zone*@
+                @*Tab of initing*@
+                <div class="trade-zone-tab-content" id="initingTradeZoneTab">
+                    <h5>Initial version</h5>
+                    @*Group button confirm*@
+                    <div style="float: right" id="confirmGroupButton" class="m-b-10">
+                        <button class="btn btn-danger btn-mini m-l-5"
+                                style="float: right"
+                                id="btnCloseTradeZone"
+                                onclick="CloseConfirmBox()">
+                            Cancel
+                        </button>
+                        <button class="btn btn-success btn-mini"
+                                style="float: right"
+                                id="btnConfirmTradeZone"
+                                data-toggle="modal"
+                                data-target="#inputInfoToInsertTradeZone">
+                            Confirm
+                        </button>
+                    </div>
+                    @*Table of initing*@
+                    <div class="table-responsive" style="height: 65%;overflow: auto;">
+                        <table class="table table-striped table-bordered"
+                               id="new-cons"
+                               style="font-size: 13px">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th class="text-center">Trade Zone of store</th>
+                                    <th class="tabledit-toolbar-column text-center">Weight</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bodyInitingTradeZone">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @**@
+                <div>
+                    @*Button back*@
+                    <div class="checkbox-fade fade-in-primary">
+                        <label>
+                            <input type="checkbox" value="" id="detailTradeZoneStatus" onclick="return false;">
+                            <span class="cr">
+                                <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                            </span> <span>Active</span>
+                        </label>
+                    </div>
+                    <button class="btn btn-danger btn-mini m-l-5"
+                            style="float: right"
+                            onclick="DeleteTradeZoneVersionDetail()">
+                        Delete
+                    </button>
+                    <button class="btn btn-success btn-mini m-l-5"
+                            id="activeTradeZoneButton"
+                            style="float: right"
+                            onclick="ActiveTradeZoneVersion()">
+                        Active
+                    </button>
+                    @*Div detail*@
+                    <div style="height: 55%; overflow: auto; overflow-x: hidden;">
+                        @*id*@
+                        <input type="hidden" name="name" id="detailTradeZoneId" value="" />
+                        @*Day*@
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Day</label>
+                            <div class="col-sm-10">
+                                <label class="badge badge-lg" id="monDetailLabel">Mon</label>
+                                <label class="badge badge-lg" id="tueDetailLabel">Tue</label>
+                                <label class="badge badge-lg" id="wedDetailLabel">Wed</label>
+                                <label class="badge badge-lg" id="thuDetailLabel">Thu</label>
+                                <label class="badge badge-lg" id="friDetailLabel">Fri</label>
+                                <label class="badge badge-lg" id="satDetailLabel">Sat</label>
+                                <label class="badge badge-lg" id="sunDetailLabel">Sun</label>
+                            </div>
+                        </div>
+                        @*Slot*@
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Slot</label>
+                            <div class="col-sm-10">
+                                <label class="badge badge-lg" id="slot1DetailLabel">0-6h</label>
+                                <label class="badge badge-lg" id="slot2DetailLabel">6-12h</label>
+                                <label class="badge badge-lg" id="slot3DetailLabel">12-18h</label>
+                                <label class="badge badge-lg" id="slot4DetailLabel">18-24h</label>
+                            </div>
+                        </div>
+                        @*Distance*@
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Distance</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="detailTradeZoneDistance" readonly>
+                            </div>
+                        </div>
+                        @*List tradezone of store*@
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered"
+                                   id="new-cons"
+                                   style="font-size: 13px">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th class="text-center">Trade Zone of store</th>
+                                        <th class="tabledit-toolbar-column text-center">Weight</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bodyTradeZoneOfStoreTable">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*Tab group zone control tab*@
+            <div class="tab-pane" id="groupZone" role="tabpanel">
+                <button class="btn btn-primary btn-mini"
+                        id="InitSystemZoneForGroupZoneButton"
+                        style="float: right"
+                        data-toggle="modal"
+                        data-target="#chooseTypeGroupZoneModal">
+                    Create new
+                </button>
+
+                <div id="groupGroupZoneButton" style="display: none">
+                    <button class="btn btn-danger btn-mini" onclick="CancelSystemZoneForGroupZone()"
+                            id="CancelSystemZoneForGroupZoneButton"
+                            style="float: right;">
+                        <i class="icofont icofont-ui-close" style="margin-right:0px"></i>
+                    </button>
+                    <button class="btn btn-success btn-mini m-r-5"
+                            onclick="CheckValidGroupZone()"
+                            style="float: right;">
+                        <i class="icofont icofont-ui-check" style="margin-right:0px"></i>
+                    </button>
+                </div>
+
+                <div class="checkbox-fade fade-in-primary">
+                    <label>
+                        <input type="checkbox" value="" id="showAllGroupZoneCheckBox">
+                        <span class="cr">
+                            <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                        </span> <span>Show group Zone on map</span>
+                    </label>
+                </div>
+                <div class="table-responsive" style="height: 65%; overflow: auto;">
+                    <table class="table table-striped table-bordered"
+                           id="new-cons"
+                           style="font-size: 13px">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Id</th>
+                                <th class="text-center">Group Zone</th>
+                                <th class="tabledit-toolbar-column text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bodyGroupZoneTable">
+                            <tr>
+                                <th class="text-center" scope="row">Loading...</th>
+                                <td class="tabledit-view-mode">
+                                    <span class="tabledit-span">Loading...</span>
+                                </td>
+                                <td style="white-space: nowrap; width: 1%">
+                                    <span class="tabledit-span">Loading...</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @*Tab asset control tab*@
+            <div class="tab-pane" id="asset" role="tabpanel">
+                <div style="float:left">
+                    <h6 id="">Tracking assets</h6>
+                </div>
+                <button class="btn btn-success btn-mini m-l-5 m-b-10"
+                        style="float: right"
+                        id="trackingButton"
+                        onclick="TrackingAsset()">
+                    Tracking
+                </button>
+                <button class="btn btn-danger btn-mini m-l-5 m-b-10"
+                        style="float: right; display: none;"
+                        id="stopTrackingButton"
+                        onclick="StopTrackingAsset()">
+                    Stop
+                </button>
+                <div class="table-responsive" style="height: 65%; overflow: auto; display: none" id="tableOfTrackingAsset">
+                    <table class="table table-striped table-bordered"
+                           id="new-cons"
+                           style="font-size: 13px">
+                        <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th class="text-center">Name</th>
+                                <th class="tabledit-toolbar-column text-center">Type</th>
+                                <th class="tabledit-toolbar-column text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bodyOfTrackingAsset">
+                            <tr>
+                                <th class="text-center" scope="row">Loading...</th>
+                                <td class="tabledit-view-mode">
+                                    <span class="tabledit-span">Loading...</span>
+                                </td>
+                                <td style="white-space: nowrap; width: 1%">
+                                    <span class="tabledit-span">Loading...</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Modal detail building -->
+<div class="modal fade"
+     id="seeBuildingDetail"
+     style="z-index: 1060">
+    <div class="modal-dialog modal-lg" role="document" id="buildingModal">
+        <div class="preloader3 loader-block pos-absolute"
+             style="display: none;
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color:rgba(0, 0, 0, 0.5);"
+             id="buildingPreloader">
+            <div class="circ1"></div>
+            <div class="circ2"></div>
+            <div class="circ3"></div>
+            <div class="circ4"></div>
+        </div>
+        <div class="modal-content">
+            <div class="modal-header" style="display: block;">
+                <img id="buildingImg" src="http://maps.gstatic.com/tactile/pane/default_geocode-2x.png"
+                     width="100%"
+                     height="210px"
+                     style="object-fit: cover" />
+                <div class="row m-t-10">
+                    <div class="col-sm-8">
+                        <h3 class="modal-title" id="buildingName">
+                        </h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <h6 id="buildingType" class="col-sm-6"></h6>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id="infoBuildingRow" class="col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Id</label>
+                            <div class="col-sm-8">
+                                <input type="text"
+                                       class="form-control"
+                                       id="buildingId"
+                                       readonly />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Address</label>
+                            <div class="col-sm-8">
+                                <input type="text"
+                                       class="form-control"
+                                       id="buildingAdress"
+                                       readonly />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Create day</label>
+                            <div class="col-sm-8">
+                                <input type="text"
+                                       class="form-control"
+                                       id="buildingCreateDay"
+                                       readonly />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Floors number</label>
+                            <div class="col-sm-8">
+                                <input type="text"
+                                       class="form-control"
+                                       id="buildingNumberOfFloor"
+                                       readonly />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Campus id</label>
+                            <div class="col-sm-8">
+                                <input type="text"
+                                       class="form-control"
+                                       id="buildingCampusId"
+                                       readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div id="infoListFloorRow" class="col-sm-6" style="overflow: auto;">
+                        <div id="nestable-menu" class="m-b-10">
+                            <h5>
+                                List floors
+                            </h5>
+                        </div>
+                        <div class="dd" id="color-nestable">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                        id="closeBuildingDetailButton">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade modal-flex"
+     id="Modal-Multi"
+     tabindex="-1"
+     role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body text-center">
+                <div>
+                    <button type="button"
+                            class="btn btn-default waves-effect m-t-20"
+                            data-toggle="modal"
+                            data-target="#meta-Modal">
+                        Click Here!
+                    </button>
+                </div>
+                <div class="modal fade"
+                     id="meta-Modal"
+                     tabindex="-1"
+                     role="dialog">
+                    <div class="modal-dialog modal-sm" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Modal title</h4>
+                            </div>
+                            <div class="modal-body">
+                                <h5>Small Modal</h5>
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur
+                                    adipiscing .
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button"
+                                        class="btn btn-default waves-effect"
+                                        data-dismiss="modal">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="m-t-10">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing
+                    lorem impus dolorsit.onsectetur adipiscing
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-default waves-effect"
+                        data-dismiss="modal">
+                    Close
+                </button>
+                <button type="button"
+                        class="btn btn-primary waves-effect waves-light">
+                    Save changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@*Hidden button for createGroupZoneModal*@
+<button data-toggle="modal" data-target="#createGroupZoneModal" style="display:none" id="showCreateGroupZoneModalButton"></button>
+@*Input Name for valid group zone*@
+<div class="modal fade" id="createGroupZoneModal" style="z-index: 1060;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Create new Group Zone
+                </h5>
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        id="closeCreateGroupZoneModalButton"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Name</label>
+                        <div class="col-sm-10">
+                            <label id="nameGroupZone-error" class="error" style="display: none; color: rgb(138, 31, 17);">
+                                This is required.
+                            </label>
+                            <input type="text" class="form-control" id="nameGroupZone">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">List Name</label>
+                        <div class="col-sm-10">
+                            <textarea class="col-sm-12" rows="4" id="listGroupZoneName" readonly></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        id="closeGroupZoneModalButton"
+                        class="btn btn-secondary"
+                        data-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary" onclick="CreateGroupZone()">
+                    Create
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@*Input distance modal*@
+<div class="modal fade" id="inputDistanceModal" style="z-index: 1060;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Initial detail
+                </h5>
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        id="closeAddLocationModalButton"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Distance</label>
+                    <div class="col-sm-10">
+                        <label id="distanceService-error" class="error" style="display: none; color: rgb(138, 31, 17);">
+                            This is required an number greater than 0.
+                        </label>
+                        <input type="number" min="1" max="50" class="form-control" placeholder="km" id="distanceService">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Stores</label>
+                    <div class="col-sm-10">
+                        <label id="storeSelect-error" class="error" style="display: none; color: rgb(138, 31, 17);">
+                            Please choose one or more stores
+                        </label>
+                        <select id='storeSelect' multiple>
+                            @if (Model != null) foreach (var item in Model)
+                                {
+                                    if (item.Status == 1 || item.Status == 2 || item.Status == 4)
+                                    {
+                                        <option value='@item.Id'>@item.Name</option>
+                                    }
+                                }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Day</label>
+                    <div class="col-sm-10">
+                        <label id="pickDay-error" class="error" style="display: none; color: rgb(138, 31, 17);">
+                            Please choose one or more day
+                        </label>
+                        <button class="btn btn-mini btn-round btn-default m-b-5" onclick="PickDay('mondayLabel')" id="mondayLabel" style="font-weight: 700; font-size: 14px;">Mon</button>
+                        <button class="btn btn-mini btn-round btn-default m-b-5" onclick="PickDay('tuesdayLabel')" id="tuesdayLabel" style="font-weight: 700; font-size: 14px;">Tue</button>
+                        <button class="btn btn-mini btn-round btn-default m-b-5" onclick="PickDay('wednesdayLabel')" id="wednesdayLabel" style="font-weight: 700; font-size: 14px;">Wed</button>
+                        <button class="btn btn-mini btn-round btn-default m-b-5" onclick="PickDay('thursdayLabel')" id="thursdayLabel" style="font-weight: 700; font-size: 14px;">Thu</button>
+                        <button class="btn btn-mini btn-round btn-default m-b-5" onclick="PickDay('fridayLabel')" id="fridayLabel" style="font-weight: 700; font-size: 14px;">Fri</button>
+                        <button class="btn btn-mini btn-round btn-default m-b-5" onclick="PickDay('saturdayLabel')" id="saturdayLabel" style="font-weight: 700; font-size: 14px;">Sat</button>
+                        <button class="btn btn-mini btn-round btn-default m-b-5" onclick="PickDay('sundayLabel')" id="sundayLabel" style="font-weight: 700; font-size: 14px;">Sun</button>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Time</label>
+                    <div class="col-sm-10">
+                        <label id="pickTimeSlot-error" class="error" style="display: none; color: rgb(138, 31, 17);">
+                            Please choose one or more day
+                        </label>
+                        <button class="btn btn-mini btn-round btn-default m-b-5" onclick="PickTimeSlot('labelTimeSlot1')" id="labelTimeSlot1" style="font-weight: 700; font-size: 14px;">0-6h</button>
+                        <button class="btn btn-mini btn-round btn-default m-b-5" onclick="PickTimeSlot('labelTimeSlot2')" id="labelTimeSlot2" style="font-weight: 700; font-size: 14px;">6-12h</button>
+                        <button class="btn btn-mini btn-round btn-default m-b-5" onclick="PickTimeSlot('labelTimeSlot3')" id="labelTimeSlot3" style="font-weight: 700; font-size: 14px;">12-18h</button>
+                        <button class="btn btn-mini btn-round btn-default m-b-5" onclick="PickTimeSlot('labelTimeSlot4')" id="labelTimeSlot4" style="font-weight: 700; font-size: 14px;">18-24h</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        id="closeTradeZoneModalButton"
+                        class="btn btn-secondary"
+                        data-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary" onclick="InitTradeZone()">
+                    Submit
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@*Choose type of group zone to create*@
+<div class="modal fade" id="chooseTypeGroupZoneModal" style="z-index: 1060;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Choose type of group zone
+                </h5>
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        id="closeAddLocationModalButton"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Type</label>
+                        <div class="col-sm-10">
+                            <select name="select" class="form-control form-control-primary" id="typeOfGroupZone">
+                                <option value="0">System Zone</option>
+                                <option value="1">Ward</option>
+                                <option value="2">District</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        id="closeChooseTypeGroupZoneButton"
+                        class="btn btn-secondary"
+                        data-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary" onclick="InitSystemZoneForGroupZone()">
+                    Submit
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@*Send Request Modal*@
+<div class="modal fade" id="addLocationModal" style="z-index: 1060;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Request
+                </h5>
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        id="closeAddLocationModalButton"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label"><b>Description</b></label>
+                        <div class="col-sm-10">
+                            <label id="descriptionTextArea-error" class="error" for="nameCreateNew" style="display: none; color: rgb(138, 31, 17);">
+                                This is required.
+                            </label>
+                            <textarea type="text"
+                                      id="descriptionTextArea"
+                                      rows="4"
+                                      class="form-control"
+                                      placeholder="Ex: Survey store A - 23 street B - building C - floor 2 - Area D ..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label"><b>Map Location</b></label>
+                        <div class="col-sm-10">
+                            <label id="locationPickInput-error" class="error" for="nameCreateNew" style="display: none; color: rgb(138, 31, 17);">
+                                This is required.
+                            </label>
+                            <div class="row"
+                                 id="locationPickInput"
+                                 style="margin-right: 0px;
+                                        margin-left: 0px;
+                                        border: 1px solid rgba(0,0,0,.15);"
+                                 data-toggle="modal"
+                                 href="#pickOnMap">
+                                <div class="col-sm-1" style="margin: auto">
+                                    <i class="icofont icofont-location-pin"
+                                       style="font-size: x-large; color: #1abc9c"></i>
+                                </div>
+                                <input type="hidden" id="wkt" value="" />
+                                <div class="col-sm-10" id="mapLocation">Choose location on map</div>
+                                <div class="col-sm-1" style="margin: auto">
+                                    <i class="ion-chevron-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary" onclick="SendRequestSurvey()">
+                    Send
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@*Input information for inserting tradezone*@
+<div class="modal fade" id="inputInfoToInsertTradeZone" style="z-index: 1060;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Insert Trade Zone version
+                </h5>
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        id="closeAddLocationModalButton"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label"><b>Name</b></label>
+                        <div class="col-sm-10">
+                            <label id="nameOfNewTradeZone-error" class="error" style="display: none; color: rgb(138, 31, 17);">
+                                This is required.
+                            </label>
+                            <input type="text" class="form-control" id="nameOfNewTradeZone" oninput="CheckValidNameOfTradeZone()">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label"><b>Description</b></label>
+                        <div class="col-sm-10">
+                            <label id="descriptionTradeZone-error" class="error" for="nameCreateNew" style="display: none; color: rgb(138, 31, 17);">
+                                This is required.
+                            </label>
+                            <textarea type="text"
+                                      id="descriptionTradeZone"
+                                      rows="4"
+                                      class="form-control"
+                                      placeholder="Ex: This is used for Holiday..."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        id="closeInsertModalButton"
+                        data-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary" onclick="ConfirmTradeZone()">
+                    Insert
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="pickOnMap">
+    <div class="modal-dialog">
+        <div class="modal-content" style="height: 80%;">
+            <div class="modal-header">
+                <h4 class="modal-title">Add location</h4>
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-hidden="true">
+                    ×
+                </button>
+            </div>
+            <div class="container"></div>
+            <div class="modal-body" style="height: 100%;">
+                <div id="mappick" style="z-index: 0"></div>
+                <script type="text/javascript"
+                        src="~/assets/default/assets/js/mappick-init.js"></script>
+            </div>
+            <div class="modal-footer">
+                <a href="#" data-dismiss="modal" class="btn">Close</a>
+                <a href="#" data-dismiss="modal" class="btn btn-primary" id="confirmLocation">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<!-- Modal detail store -->
+<div class="modal fade" id="seeStoreDetail" style="z-index: 1060">
+    <div class="modal-dialog md-effect-2" id="storeModal">
+        <div class="preloader3 loader-block pos-absolute"
+             style="display: none;
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5);"
+             id="storeModalPreloader">
+            <div class="circ1"></div>
+            <div class="circ2"></div>
+            <div class="circ3"></div>
+            <div class="circ4"></div>
+        </div>
+        <div class="modal-content">
+            <div class="modal-header" style="display: block">
+                <img id="storeImage"
+                     src="http://maps.gstatic.com/tactile/pane/default_geocode-2x.png"
+                     width="100%"
+                     height="210px"
+                     style="object-fit: cover" />
+                <div class="row m-t-10">
+                    <div class="col-sm-6">
+                        <h3 class="modal-title" id="modalStoreName">Store Name</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <h6 id="modalStoreType" class="col-sm-6"></h6>
+                </div>
+            </div>
+            <div class="container"></div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Id</label>
+                    <div class="col-sm-8">
+                        <input type="text"
+                               class="form-control"
+                               id="modalStoreId"
+                               readonly />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Address</label>
+                    <div class="col-sm-8">
+                        <input type="text"
+                               class="form-control"
+                               id="modalStoreAddress"
+                               readonly />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Brand name</label>
+                    <div class="col-sm-8">
+                        <input type="text"
+                               class="form-control"
+                               id="modalStoreBrand"
+                               readonly />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Create Date</label>
+                    <div class="col-sm-8">
+                        <input type="text"
+                               class="form-control"
+                               id="modalStoreCreateDay"
+                               readonly />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Time slot</label>
+                    <div class="col-sm-8" style="display: grid;" id="timeSlotList">
+                        <div class="checkbox-fade fade-in-primary">
+                            <label>
+                                <input type="checkbox" value="" id="timeSlot1" onclick="return false;">
+                                <span class="cr">
+                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                </span> <span>0-6h</span>
+                            </label>
+                        </div>
+                        <div class="checkbox-fade fade-in-primary">
+                            <label>
+                                <input type="checkbox" value="" id="timeSlot2" onclick="return false;">
+                                <span class="cr">
+                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                </span> <span>6-12h</span>
+                            </label>
+                        </div>
+                        <div class="checkbox-fade fade-in-primary">
+                            <label>
+                                <input type="checkbox" value="" id="timeSlot3" onclick="return false;">
+                                <span class="cr">
+                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                </span> <span>12-18h</span>
+                            </label>
+                        </div>
+                        <div class="checkbox-fade fade-in-primary">
+                            <label>
+                                <input type="checkbox" value="" id="timeSlot4" onclick="return false;">
+                                <span class="cr">
+                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                </span> <span>18-24h</span>
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#"
+                   data-dismiss="modal"
+                   class="btn">Close</a>
+            </div>
+        </div>
+    </div>
+</div>

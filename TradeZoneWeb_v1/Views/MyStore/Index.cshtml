@@ -1,0 +1,529 @@
+﻿@using TradeZoneWeb_v1.Helpers
+@using TradeZoneWeb_v1.Models
+@model List<MyStoreModel>
+@{ ViewData["Title"] = "Brand Store Management";
+    Layout = "~/Views/Shared/BrandLayout.cshtml"; }
+
+@section CssForHead {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Load Esri Leaflet Geocoder from CDN -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/esri-leaflet-geocoder@2.3.3/dist/esri-leaflet-geocoder.css"
+          integrity="sha512-IM3Hs+feyi40yZhDH6kV8vQMg4Fh20s9OzInIIAc4nx7aMYMfo+IenRUekoYsHZqGkREUgx0VvlEsgm7nCDW9g=="
+          crossorigin="" />
+    <link href="~/assets/default/assets/css/master-table/master-table.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/assets/component/datatables.net-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/data-table/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/component/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/data-table/extensions/responsive/css/responsive.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/demo.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/j-pro-modern.css">
+    <link href="~/assets/sweet_alert_2/sweetalert2.css" rel="stylesheet" />
+
+
+}
+@section JsForHead {
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@2.5.3/dist/esri-leaflet.js"
+            integrity="sha512-K0Vddb4QdnVOAuPJBHkgrua+/A9Moyv8AQEWi0xndQ+fqbRfAFd47z4A9u1AW/spLO0gEaiE1z98PK1gl5mC5Q=="
+            crossorigin=""></script>
+    <!-- Load Esri Leaflet Geocoder from CDN -->
+    <script src="https://unpkg.com/esri-leaflet-geocoder@2.3.3/dist/esri-leaflet-geocoder.js"
+            integrity="sha512-HrFUyCEtIpxZloTgEKKMq4RFYhxjJkCiF5sDxuAokklOeZ68U2NPfh4MFtyIVWlsKtVbK5GD2/JzFyAfvT5ejA=="
+            crossorigin=""></script>
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="~/assets/default/assets/js/brand/my-store-head.js"></script>
+    <script src="/assets/terraformer/terraformer.js"></script>
+    <script src="/assets/terraformer/terraformer-arcgis-parser.js"></script>
+    <script src="/assets/terraformer/terraformer-wkt-parser.js"></script>
+    <script src="/assets/terraformer/terraformer-wkt-parser.js"></script>
+
+}
+<div class="preloader3 loader-block pos-absolute" style="
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5); " id="spinner">
+    <div class="circ1"></div>
+    <div class="circ2"></div>
+    <div class="circ3"></div>
+    <div class="circ4"></div>
+</div>
+<div class="main-body">
+    <div class="page-wrapper">
+        <div class="page-header">
+            <div class="page-header-title">
+                <h4>Brand Store Management</h4>
+            </div>
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a href="@Url.Action("index", "dashboard")">
+                            <i class="icofont icofont-home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="#!">my-store-management</a>
+                    </li>
+                </ul>
+            </div>
+            <br /><br />
+            <div class="card">
+                <div class="card-header">
+
+                    <button type="button" onclick="ResetChooseLocation()" class="btn btn-primary waves-effect waves-light f-right d-inline-block md-trigger" data-toggle="modal" data-target="#add-store">
+                        <i class="icofont icofont-plus m-r-5"></i> Add Store
+                    </button>
+                </div>
+                <div class="card-block">
+                    <div class="dt-responsive table-responsive">
+                        <table id="new-cons" class="table table-striped table-bordered nowrap">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th class="text-center">Name</th>
+                                    <th class="text-center">TimeSlot</th>
+                                    <th class="text-center">Address</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @if (Model != null)
+                                {
+                                    @foreach (var (item, i) in Model.Select((x, i) => (x, ++i)))
+                                    {
+
+                                        <tr>
+                                            <td class="text-center" style="vertical-align: middle;"></td>
+                                            <td class="text-center" style="vertical-align: middle;">
+                                                @item.Name
+                                            </td>
+                                            <td class="text-center" style="vertical-align: middle;">
+                                                <div class="text-@item.Id label-main col-sm-8"></div>
+                                                <script>parseTimeSlot(@item.TimeSlot, 'text-'+@item.Id);</script>
+                                            </td>
+                                            <td class="text-center" style="vertical-align: middle;">
+                                                @item.Address
+                                            </td>
+                                            <td class="text-center" style="vertical-align: middle;">
+                                                @if (item.Status == 3)
+                                                {
+                                                    <div class="label-main col-sm-8"><label class="label label-warning" style="width: 90%">Waiting Approval</label></div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="label-main col-sm-8"><label class="label label-success" style="width: 90%">Surveyed</label></div>
+                                                }
+                                            </td>
+
+                                            <td class="text-center" style="vertical-align: middle;">
+                                                <div class="btn-group btn-group-md" style="float: none;">
+                                                    <button data-toggle="modal" data-target="#store-details"
+                                                            data-id="@item.Id"
+                                                            class="btn-details btn btn-primary waves-effect waves-light"
+                                                            style="float: none;margin: 5px;"
+                                                            onclick="LoadStoreLocationOnMapAgain('@item.StoreGeom.Coordinates[0].Y', '@item.StoreGeom.Coordinates[0].X')">
+                                                        <span class="icofont icofont-ui-edit"></span> Details
+                                                    </button>
+                                                    <button data-id="@item.Id" class="btn-delete btn btn-danger waves-effect waves-light" style="float: none;margin: 5px;">
+                                                        <span class="icofont icofont-ui-delete"></span> Delete
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="store-details" style="z-index: 1060">
+    <div class="modal-dialog-custom modal-dialog" role="document" style="max-width: 55%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">STORE DETAILS</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card user-card">
+                    <div class="btn-group" role="group" aria-label="user-cards">
+                        <form method="post"
+                              class="j-pro" id="form-update" action="javascript:;">
+                            <div class="card-block" style="
+                                padding-left: 0px;
+                                padding-right: 0px;
+                            ">
+                                <div class="col-md-12 col-xl-12" style="
+                                    padding-left: 0px;
+                                    padding-right: 0px;
+                                ">
+                                    <div class="col-sm-12 col-xl-12" style="
+                                        padding-left: 0px;
+                                        padding-right: 0px;
+                                        display: flex;
+                                    ">
+
+                                        <div class="col-sm-6">
+                                            <img id="imageResult"
+                                                 src="http://maps.gstatic.com/tactile/pane/default_geocode-2x.png"
+                                                 alt="" style="object-fit: cover"
+                                                 width="100%"
+                                                 height="250px">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div id="storeOnMap"></div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="j-content">
+                                <div class="j-unit">
+                                    <div class="j-input j-append-big-btn">
+                                        <label class="j-icon-left" for="file_input">
+                                            <i class="icofont icofont-download" style="line-height: unset;"></i>
+                                        </label>
+                                        <div class="j-file-button">
+                                            Browse
+                                            <input type="file" name="file_name" id="upload"
+                                                   onchange="readURL(this);">
+                                        </div>
+                                        <input type="text" id="file_input"
+                                               readonly=""
+                                               placeholder="Choose file to update">
+                                        <span class="j-hint">
+                                            Only: jpg / png.
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="j-unit">
+                                    <label class="j-label">Store name</label>
+                                    <div class="j-input">
+                                        <label class="j-icon-right">
+                                            <i class="icofont icofont-pencil-alt-5" style="line-height: unset;"></i>
+                                        </label>
+                                        <input type="text" id="info-name" value="" class="update-info" required maxlength="50">
+                                    </div>
+                                </div>
+                                <div class="j-unit">
+                                    <label class="j-label">Time Slot</label>
+                                    <div class="j-input" style="display:flex;">
+                                        <div class="checkbox-fade fade-in-primary">
+                                            <label>
+                                                <input type="checkbox" id="time-slot-1" value="" class="update-info">
+                                                <span class="cr">
+                                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                                </span>
+                                                <span>0-6h</span>
+                                            </label>
+                                        </div>
+                                        <div class="checkbox-fade fade-in-primary">
+                                            <label>
+                                                <input type="checkbox" id="time-slot-2" value="" class="update-info">
+                                                <span class="cr">
+                                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                                </span>
+                                                <span>6-12h</span>
+                                            </label>
+                                        </div>
+                                        <div class="checkbox-fade fade-in-primary">
+                                            <label>
+                                                <input type="checkbox" id="time-slot-3" value="" class="update-info">
+                                                <span class="cr">
+                                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                                </span>
+                                                <span>12-18h</span>
+                                            </label>
+                                        </div>
+                                        <div class="checkbox-fade fade-in-primary">
+                                            <label>
+                                                <input type="checkbox" id="time-slot-4" value="" class="update-info">
+                                                <span class="cr">
+                                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                                </span>
+                                                <span>18-0h</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="j-unit">
+                                    <label class="j-label">Ability To Serve (people/day)</label>
+                                    <div class="j-input">
+                                        <label class="j-icon-right">
+                                            <i class="icofont icofont-group-students" style="line-height: unset;"></i>
+                                        </label>
+                                        <input type="text" id="info-ability" pattern="[0-9]{1,6}" required
+                                               title="Invalid input (6 numbers) Ex:123456" placeholder="people/day" class="update-info">
+                                    </div>
+                                </div>
+                                <div class="j-unit">
+                                    <label class="j-label">Create date</label>
+                                    <div class="j-input">
+                                        <label class="j-icon-right">
+                                            <i class="icofont icofont-tasks-alt" style="line-height: unset;"></i>
+                                        </label>
+                                        <input type="text" id="info-create-date" readonly>
+                                    </div>
+                                </div>
+                                <div class="j-unit">
+                                    <label class="j-label">Address</label>
+                                    <div class="j-input">
+                                        <textarea id="info-address" required class="update-info" maxlength="300"></textarea>
+                                    </div>
+                                </div>
+                                <div class="j-response"></div>
+                                <div class="modal-footer">
+                                    <button id="close-update" type="button" class="btn btn-secondary mobtn" data-dismiss="modal">
+                                        <i class="zmdi zmdi-close-circle-o"></i> Close
+                                    </button>
+                                    <button type="submit" id="btn-update" data-id="" class="btn btn-primary mobtn">
+                                        <i class="ti-save"></i> Update
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*Pick location*@
+<div class="modal fade" id="pickOnMap">
+    <div class="modal-dialog">
+        <div class="modal-content" style="height: 80%;">
+            <div class="modal-header">
+                <h4 class="modal-title">Add location</h4>
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-hidden="true">
+                    ×
+                </button>
+            </div>
+            <div class="container"></div>
+            <div class="modal-body" style="height: 100%;">
+                <div id="mappick" style="z-index: 0"></div>
+                <script type="text/javascript"
+                        src="~/assets/default/assets/js/mappick-init.js"></script>
+            </div>
+            <div class="modal-footer">
+                <a href="#" data-dismiss="modal" class="btn">Close</a>
+                <a href="#" data-dismiss="modal" class="btn btn-primary" id="confirmLocation">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+@*Add store*@
+<div class="modal fade" id="add-store" style="z-index: 1060">
+    <div class="modal-dialog-custom modal-dialog" role="document" style="max-width: 55%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">ADD STORE</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card user-card">
+                    <div class="btn-group" role="group" aria-label="user-cards">
+                        <form method="post"
+                              class="j-pro" id="form-add" action="javascript:;">
+                            <div class="card-block" style="
+                                padding-left: 0px;
+                                padding-right: 0px;
+                            ">
+                                <div class="col-md-12 col-xl-12" style="
+                                    padding-left: 0px;
+                                    padding-right: 0px;
+                                ">
+                                    <div class="col-sm-12 col-xl-12" style="
+                                        padding-left: 0px;
+                                        padding-right: 0px;
+                                        display: flex;
+                                    ">
+
+                                        <div class="col-sm-12">
+                                            <img id="imageResult-add"
+                                                 src="http://maps.gstatic.com/tactile/pane/default_geocode-2x.png"
+                                                 style="object-fit: cover"
+                                                 width="100%"
+                                                 height="250px">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="j-content p-t-0">
+                                <div class="row">
+                                    <div class="j-unit col-sm-5">
+                                        <label class="j-label">Only: jpg / png.</label>
+                                        <div class="j-input j-append-big-btn">
+                                            <label class="j-icon-left" for="file_input_add">
+                                                <i class="icofont icofont-download" style="line-height: unset;"></i>
+                                            </label>
+                                            <div class="j-file-button">
+                                                Browse
+                                                <input type="file" name="file_name" id="upload-add"
+                                                       onchange="readURL1(this);">
+                                            </div>
+                                            <input type="text" id="file_input_add"
+                                                   readonly="" required
+                                                   placeholder="Choose file...">
+
+                                        </div>
+                                    </div>
+                                    <div class="j-unit col-sm-7">
+                                        <label class="j-label">Time Slot</label>
+                                        <div class="j-input" style="display:flex;">
+                                            <div class="checkbox-fade fade-in-primary">
+                                                <label>
+                                                    <input type="checkbox" id="add-time-slot-1" value="" class="update-info">
+                                                    <span class="cr">
+                                                        <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                                    </span>
+                                                    <span>0-6h</span>
+                                                </label>
+                                            </div>
+                                            <div class="checkbox-fade fade-in-primary">
+                                                <label>
+                                                    <input type="checkbox" id="add-time-slot-2" value="" class="update-info">
+                                                    <span class="cr">
+                                                        <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                                    </span>
+                                                    <span>6-12h</span>
+                                                </label>
+                                            </div>
+                                            <div class="checkbox-fade fade-in-primary">
+                                                <label>
+                                                    <input type="checkbox" id="add-time-slot-3" value="" class="update-info">
+                                                    <span class="cr">
+                                                        <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                                    </span>
+                                                    <span>12-18h</span>
+                                                </label>
+                                            </div>
+                                            <div class="checkbox-fade fade-in-primary">
+                                                <label>
+                                                    <input type="checkbox" id="add-time-slot-4" value="" class="update-info">
+                                                    <span class="cr">
+                                                        <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                                    </span>
+                                                    <span>18-0h</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    
+                                </div>
+                                <div class="row">
+                                    <div class="j-unit col-sm-5">
+                                        <label class="j-label">Store name</label>
+                                        <div class="j-input">
+                                            <label class="j-icon-right">
+                                                <i class="icofont icofont-pencil-alt-5" style="line-height: unset;"></i>
+                                            </label>
+                                            <input type="text" id="add-name" value="" class="update-info" required maxlength="50">
+                                        </div>
+                                    </div>
+                                    <div class="j-unit col-sm-7">
+                                        <label class="j-label">Location</label>
+                                        <div class="j-input">
+                                            <label id="locationPickInput-error" class="error" for="nameCreateNew" style="display: none; color: rgb(138, 31, 17);">
+                                                This is required.
+                                            </label>
+                                            <div class="row"
+                                                 id="locationPickInput"
+                                                 style="margin-right: 0px;
+                                        margin-left: 0px;
+                                        border: 1px solid rgba(0,0,0,.15);"
+                                                 data-toggle="modal"
+                                                 href="#pickOnMap">
+                                                <div class="col-sm-1" style="margin: auto">
+                                                    <i class="icofont icofont-location-pin"
+                                                       style="font-size: x-large; color: #1abc9c"></i>
+                                                </div>
+                                                <input type="hidden" id="wkt" value="" />
+                                                <div class="col-sm-11 p-10" id="mapLocation">Choose location on map</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="j-unit col-sm-5">
+                                        <label class="j-label">Ability To Serve (people/day)</label>
+                                        <div class="j-input">
+                                            <label class="j-icon-right">
+                                                <i class="icofont icofont-group-students" style="line-height: unset;"></i>
+                                            </label>
+                                            <input type="text" id="add-ability" pattern="[0-9]{1,6}" required
+                                                   title="Invalid input (6 numbers) Ex:123456" placeholder="people/day" class="update-info">
+                                        </div>
+                                    </div>
+                                    <div class="j-unit col-sm-7">
+                                        <label class="j-label">Address</label>
+                                        <div class="j-input">
+                                            <input type="text" id="add-address" required class="update-info" maxlength="300"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                                
+                                <div class="j-response"></div>
+                                <div class="modal-footer">
+                                    <button id="close-add" type="button" class="btn btn-secondary mobtn" data-dismiss="modal">
+                                        <i class="zmdi zmdi-close-circle-o"></i> Close
+                                    </button>
+                                    <button type="submit" id="btn-submit" data-id="" class="btn btn-primary mobtn">
+                                        <i class="ti-save"></i> Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section ScriptsForBottom {
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-app.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-analytics.js"></script>
+    <script src="~/assets/default/assets/js/brand/manage-mystore.js"></script>
+    <script src="~/assets/sweet_alert_2/sweetalert2.js"></script>
+    <script src="~/assets/component/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/component/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/assets/default/assets/pages/data-table/js/jszip.min.js"></script>
+    <script src="~/assets/default/assets/pages/data-table/js/pdfmake.min.js"></script>
+    <script src="~/assets/default/assets/pages/data-table/js/vfs_fonts.js"></script>
+    <script src="~/assets/default/assets/pages/data-table/extensions/responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/assets/component/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/assets/component/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/assets/component/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/assets/component/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/assets/component/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/assets/default/assets/pages/data-table/extensions/responsive/js/responsive-custom.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/j-pro/js/jquery.ui.min.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/pages/j-pro/js/jquery.maskedinput.min.js"></script>
+    <script src="~/assets/default/assets/js/brand/uploade-img.js"></script>
+    <script src="~/assets/default/assets/js/brand/store-map.js"></script>
+    <script type="text/javascript" src="~/assets/default/assets/js/mappick.js"></script>
+}

@@ -1,0 +1,167 @@
+﻿@using TradeZoneWeb_v1.Helpers
+@using TradeZoneWeb_v1.Models.AdminModel
+@model List<Configuration>
+@{ ViewData["Title"] = "Configuration Management";
+    Layout = "~/Views/Shared/AdminLayout.cshtml"; }
+
+@section CssForHead {
+    <link href="~/assets/default/assets/css/master-table/master-table.css" rel="stylesheet" />
+    <link href="~/assets/sweet_alert_2/sweetalert2.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/assets/component/datatables.net-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/data-table/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/component/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/data-table/extensions/responsive/css/responsive.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/demo.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/j-pro-modern.css">
+}
+@section JsForHead {
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+}
+<div class="preloader3 loader-block pos-absolute" style="
+                    z-index: 2;
+                    margin: auto;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5); " id="spinner">
+    <div class="circ1"></div>
+    <div class="circ2"></div>
+    <div class="circ3"></div>
+    <div class="circ4"></div>
+</div>
+<div class="main-body">
+    <div class="page-wrapper">
+        <div class="page-header">
+            <div class="page-header-title">
+                <h4>Configuration</h4>
+            </div>
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a href="@Url.Action("index", "dashboard")">
+                            <i class="icofont icofont-home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="#!">configuration</a>
+                    </li>
+                </ul>
+            </div>
+            <br /><br />
+            <div class="card">
+                <div class="card-header" style="display: flex;">
+                    <div class="col-md-6 col-xl-2">
+                        <div class="input-group">
+                            <button id="btn-change" class="btn-delete btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#version-form">
+                                Change Version
+                            </button>
+                            <input type="text" id="current-version" class="form-control text-center" readonly value="@ViewBag.ListVersion.CurrentActive" style="z-index: unset;">
+                        </div>
+                    </div>
+                    <div style="margin-left: 70%; width: 150px;">
+                        <select id="cb-version-filter" style="height: 39px;" class="filter custom-select custom-select-sm form-control form-control-sm">
+                            <option value="-1">ALL</option>
+                            @foreach (var item in ViewBag.ListVersion.VersionList)
+                            {
+                                if (item == ViewBag.ListVersion.CurrentActive)
+                                {
+                <option value="@item" selected>Version-@item</option>
+ }
+            else
+            {
+<option value="@item">Version-@item</option>}
+
+            }
+                        </select>
+                    </div>
+                </div>
+                <div class="card-block table-border-style">
+                    <div class="table-responsive">
+                        <table class="table" id="tbl-data">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th class="text-center">Name</th>
+                                    <th class="text-center">Value</th>
+                                    <th class="text-center">Version</th>
+                                    <th class="text-center">Description</th>
+                                    <th class="text-center">Active</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="version-form" style="z-index: 1060">
+    <div class="modal-dialog-custom modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chang Version</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card user-card">
+                    <div class="btn-group" role="group" aria-label="user-cards">
+                        <form method="post"
+                              class="j-pro" id="form-add" action="javascript:;">
+                            <div class="j-content">
+                                <div class="j-unit">
+                                    <label class="j-label">Version</label>
+                                    <div class="j-unit">
+                                        <label class="j-input j-select j-success-view">
+                                            <select id="cb-change-version" style="height: 60px;" class="custom-select custom-select-sm form-control form-control-sm">
+                                                @foreach (var item in ViewBag.ListVersion.VersionList)
+                                                {
+                                                    
+                                    <option value="@item">Version-@item</option> }
+                                                   
+                            
+                                            </select>
+                                            <i></i>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="j-divider j-gap-bottom-25"></div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button id="close-change" type="button" class="btn btn-secondary mobtn" data-dismiss="modal">
+                                    <i class="zmdi zmdi-close-circle-o"></i> Close
+                                </button>
+                                <button type="submit" id="btn-submit" class="btn btn-primary mobtn" disabled>
+                                    <i class="ti-save"></i> Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section ScriptsForBottom {
+    <script src="~/assets/default/assets/js/admin-configuration/configuration.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/demo.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/default/assets/pages/j-pro/css/j-pro-modern.css">
+    <script src="~/assets/component/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/component/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/assets/default/assets/pages/data-table/js/jszip.min.js"></script>
+    <script src="~/assets/default/assets/pages/data-table/js/pdfmake.min.js"></script>
+    <script src="~/assets/default/assets/pages/data-table/js/vfs_fonts.js"></script>
+    <script src="~/assets/default/assets/pages/data-table/extensions/responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/assets/component/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/assets/component/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/assets/component/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/assets/component/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/assets/component/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/assets/sweet_alert_2/sweetalert2.js"></script>
+}

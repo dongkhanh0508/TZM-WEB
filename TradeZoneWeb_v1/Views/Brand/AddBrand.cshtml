@@ -1,0 +1,48 @@
+﻿@model BrandAccountModel
+@{
+
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+
+<body class="fix-menu">
+    <section class="login p-fixed d-flex text-center bg-primary common-img-bg">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="login-card card-block auth-body">
+                        <form class="md-float-material" asp-action="AddBrand" asp-controller="Brand">
+                            <div class="text-center">
+                                <img src="/default/assets/images/auth/logo.png" alt="logo.png">
+                            </div>
+                            <div class="auth-box">
+                                <div class="row m-b-20">
+                                    <div class="col-md-12">
+                                        <h3 class="text-left txt-primary">Welcome @User.Identity.Name</h3>
+                                        <p class="text-left" style="color: gray;">It is the first time you sign in. So please enter your branch name to get started.</p>
+                                    </div>
+                                </div>
+                                <div class="row m-b-20">
+                                    <div class="col-md-12">
+                                        <input type="hidden" asp-for="Account.Id" value="@Model.Account.Id" />
+                                        <input type="hidden" asp-for="Account.Role" value="@Model.Account.Role" />
+                                        <input asp-for="Account.BrandName" class="form-control" placeholder="Enter your branch name">
+                                        <span asp-validation-for="Account.BrandName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row m-t-30">
+                                    <div class="col-md-12">
+                                        <button type="submit" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+    </script>
+</body>
